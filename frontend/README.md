@@ -22,16 +22,19 @@ A modern, production-ready blog application frontend built with React 19, showca
 ## 🛠 Tech Stack
 
 ### Core Framework
+
 - **React 19.2.0** - Latest React with concurrent features (`use()`, `useTransition()`, `Suspense`)
 - **Vite 7.2.4** - Fast build tool and dev server
 - **React Router DOM 7.10.1** - Client-side routing
 
 ### State Management & Data Fetching
+
 - **TanStack Query (React Query) 5.90.12** - Server state management, caching, and synchronization
 - **React Context API** - Client-side state management (authentication)
 - **useReducer** - Complex state logic (auth reducer)
 
 ### UI & Styling
+
 - **Tailwind CSS 4.1.17** - Utility-first CSS framework
 - **Shadcn/ui** - Accessible component library (Radix UI primitives)
 - **Lucide React** - Icon library
@@ -40,21 +43,24 @@ A modern, production-ready blog application frontend built with React 19, showca
 - **Vanta.js** - Animated 3D background effects
 
 ### Form Management & Validation
+
 - **React Hook Form 7.68.0** - Performant form library
 - **Yup 1.7.1** - Schema validation
 - **@hookform/resolvers** - Yup resolver for React Hook Form
 
 ### HTTP & API
-- **Axios 1.13.2** - HTTP client
-- **axios-auth-refresh 3.3.6** - Automatic token refresh interceptor
+
+- **fetch and its middleware** - HTTP client
 
 ### Utilities
+
 - **date-fns 4.1.0** - Date formatting and manipulation
 - **jwt-decode 4.0.0** - JWT token decoding
 - **react-hot-toast 2.6.0** - Toast notifications
 - **http-status-codes** - HTTP status code constants
 
 ### Development Tools
+
 - **ESLint** - Code linting
 - **PostCSS** - CSS processing
 - **Autoprefixer** - CSS vendor prefixing
@@ -249,22 +255,30 @@ frontend/
 **Purpose**: Manages server state, caching, and synchronization.
 
 **Key Features**:
+
 - Automatic caching and background refetching
 - Optimistic updates
 - Cache invalidation on mutations
 - Loading and error states
 
 **Query Keys Structure**:
+
 ```javascript
 // Hierarchical query keys for efficient cache management
 homePostsKeys = {
   all: ["homePosts"],
   lists: () => [...homePostsKeys.all, "list"],
-  list: (page, limit, search) => [...homePostsKeys.lists(), page, limit, search]
-}
+  list: (page, limit, search) => [
+    ...homePostsKeys.lists(),
+    page,
+    limit,
+    search,
+  ],
+};
 ```
 
 **Usage Pattern**:
+
 ```javascript
 // Queries (read operations)
 const { data, isLoading, error } = useHomePosts(page, limit, search);
@@ -275,6 +289,7 @@ createPostMutation.mutate(postData);
 ```
 
 **Cache Configuration** (`main.jsx`):
+
 - `staleTime: 2 minutes` - Data considered fresh for 2 minutes
 - `gcTime: 5 minutes` - Unused data kept in cache for 5 minutes
 - `refetchOnWindowFocus: false` - Prevents refetch on tab switch
@@ -283,6 +298,7 @@ createPostMutation.mutate(postData);
 ### 2. Authentication Flow
 
 **Architecture**:
+
 ```
 App Load
   ↓
@@ -298,6 +314,7 @@ App renders with auth state
 ```
 
 **Key Files**:
+
 - `contexts/authContext.jsx` - Auth state provider
 - `utils/authPromise.js` - Cached promise for auth resolution
 - `hooks/authHooks/authHooks.js` - Auth operations (signin, signup, logout)
@@ -305,6 +322,7 @@ App renders with auth state
 - `utils/tokenUtils.js` - JWT token management
 
 **Token Management**:
+
 - Access token stored in localStorage
 - Refresh token stored in localStorage
 - Automatic token refresh via axios interceptor
@@ -313,15 +331,18 @@ App renders with auth state
 ### 3. Axios Interceptors
 
 **Request Interceptor** (`utils/axiosInstance.js`):
+
 - Automatically adds `Authorization: Bearer <token>` header
 - Runs before every request
 
 **Response Interceptor**:
+
 - Success: Shows toast notification if message exists
 - Error: Shows error toast, handles specific status codes
 - Network errors: Shows network error message
 
 **Token Refresh Interceptor** (`axios-auth-refresh`):
+
 - Automatically refreshes token on 401 Unauthorized
 - Pauses requests while refreshing
 - Retries failed request with new token
@@ -333,7 +354,9 @@ App renders with auth state
 - Redirects to login if refresh fails
 
 ### 4. 3D Visual Effects
+
 **Technology**: Vanta.js + Three.js
+
 - Implemented via `AuthLayout` component
 - Provides interactive "Clouds" effect on authentication pages
 - Uses `useRef` and `useEffect` for WebGL context lifecycle management
@@ -342,6 +365,7 @@ App renders with auth state
 ### 5. Form Handling Pattern
 
 **Standard Pattern**:
+
 ```javascript
 // 1. Define validation schema (validations/)
 const postSchema = yup.object({
@@ -367,10 +391,11 @@ const handleSubmit = createSubmitHandlerWithToast(form, onSubmit, {
   name="title"
   label="Title"
   placeholder="Enter post title"
-/>
+/>;
 ```
 
 **Key Utilities**:
+
 - `formSubmitWithToast.js` - Wraps handleSubmit with toast notifications
 - `custom/FormField.jsx` - Unified form field component
 - Validation schemas in `validations/` folder
@@ -378,6 +403,7 @@ const handleSubmit = createSubmitHandlerWithToast(form, onSubmit, {
 ### 5. Dialog Management Pattern
 
 **Imperative Dialog Pattern**:
+
 ```javascript
 // 1. Use useImperativeDialog hook
 const { isOpen, payload, openDialog, closeDialog } = useImperativeDialog(null);
@@ -397,10 +423,11 @@ useImperativeHandle(ref, () => ({
     mutationHook: useDeletePost,
     mutationCall: (payload) => ({ postId: payload.id }),
   }}
-/>
+/>;
 ```
 
 **Benefits**:
+
 - Reusable dialog logic
 - Consistent dialog behavior
 - Separation of dialog state from business logic
@@ -482,6 +509,7 @@ App
 **Managed by**: TanStack Query
 
 **What it manages**:
+
 - Posts data (home, user posts, post details)
 - Comments data
 - User profile data
@@ -489,12 +517,14 @@ App
 - Search/filter state
 
 **Key Concepts**:
+
 - **Query Keys**: Hierarchical keys for cache management
 - **Stale Time**: How long data is considered fresh
 - **Cache Time**: How long unused data stays in cache
 - **Invalidation**: Clearing cache when data changes
 
 **Example**:
+
 ```javascript
 // Query
 const { data, isLoading } = useHomePosts(page, limit, search);
@@ -510,10 +540,12 @@ createPostMutation.mutate(postData);
 **Managed by**: React Context + useReducer
 
 **What it manages**:
+
 - Authentication state (user, tokens)
 - UI state (dialogs, modals)
 
 **Auth State Flow**:
+
 ```
 AuthProvider (Context)
   ↓
@@ -525,6 +557,7 @@ State updated → Components re-render
 ```
 
 **Example**:
+
 ```javascript
 const { user, isAuthenticated, signin, signout } = useAuth();
 ```
@@ -534,11 +567,13 @@ const { user, isAuthenticated, signin, signout } = useAuth();
 **Managed by**: useState, useRef
 
 **What it manages**:
+
 - Form inputs
 - UI interactions (dropdowns, modals)
 - Temporary UI state
 
 **Best Practices**:
+
 - Use `useState` for simple state
 - Use `useRef` for values that don't trigger re-renders
 - Use `useMemo` for expensive calculations
@@ -551,6 +586,7 @@ const { user, isAuthenticated, signin, signout } = useAuth();
 ### Service Layer Architecture
 
 **Structure**:
+
 ```
 Component/Hook
   ↓
@@ -562,6 +598,7 @@ Backend API
 ```
 
 **Service Files**:
+
 - `authService.js` - Authentication endpoints
 - `postService.js` - Post CRUD operations
 - `commentService.js` - Comment CRUD operations
@@ -569,6 +606,7 @@ Backend API
 - `cloudinaryService.js` - Image upload operations
 
 **Example Service Function**:
+
 ```javascript
 // services/postService.js
 export const fetchAllPosts = async (params = {}) => {
@@ -582,6 +620,7 @@ export const fetchAllPosts = async (params = {}) => {
 ```
 
 **Usage in Hooks**:
+
 ```javascript
 // hooks/postHooks/postQueries.js
 export const useHomePosts = (page, limit, search) => {
@@ -598,12 +637,14 @@ export const useHomePosts = (page, limit, search) => {
 ### Error Handling
 
 **Global Error Handling** (`axiosInstance.js`):
+
 - Network errors → Toast notification
 - Server errors (4xx, 5xx) → Toast with error message
 - 401 Unauthorized → Automatic token refresh
 - Token refresh failure → Redirect to login
 
 **Component-Level Error Handling**:
+
 - React Query provides `error` state
 - Error boundaries catch render errors
 - Form validation errors shown inline
@@ -615,6 +656,7 @@ export const useHomePosts = (page, limit, search) => {
 ### Form Architecture
 
 **Components**:
+
 1. **Form Component** (`components/custom/FormField.jsx`)
    - Unified component for all input types
    - Handles text, email, password, tel, textarea
@@ -657,18 +699,21 @@ Success/Error → Toast notification
 ### Form Components
 
 **FormField** (`components/custom/FormField.jsx`):
+
 - Auto-detects input type
 - Supports password toggle
 - Shows validation errors
 - Supports icons and helper text
 
 **FormFileInput** (`components/custom/FormFileInput.jsx`):
+
 - File upload with preview
 - Cloudinary integration
 - Image validation
 - Progress indication
 
 **FormSelect** (`components/custom/FormSelect.jsx`):
+
 - Dropdown select component
 - Integrates with React Hook Form
 - Accessible (Radix UI)
@@ -680,16 +725,19 @@ Success/Error → Toast notification
 ### Route Structure
 
 **Public Routes**:
+
 - `/` - Home page (post list)
 - `/posts/:id` - Post detail page
 
 **Auth Routes** (redirect if authenticated):
+
 - `/signin` - Sign in page
 - `/signup` - Sign up page
 - `/forgot-password` - Forgot password
 - `/reset-password` - Reset password (with token)
 
 **Protected Routes** (require authentication):
+
 - `/dashboard` - User dashboard (user's posts)
 - `/create-post` - Create new post
 - `/change-password` - Change password
@@ -697,12 +745,14 @@ Success/Error → Toast notification
 ### Route Protection
 
 **ProtectedRoute** (`components/common/ProtectedRoute.jsx`):
+
 - Checks authentication status
 - Shows loading while checking
 - Redirects to `/auth` if not authenticated
 - Preserves intended destination
 
 **AuthRoute** (`components/common/AuthRouteProtection.jsx`):
+
 - Prevents authenticated users from accessing auth pages
 - Redirects to `/dashboard` if authenticated
 - Shows auth pages only for non-authenticated users
@@ -710,6 +760,7 @@ Success/Error → Toast notification
 ### Navigation
 
 **Programmatic Navigation**:
+
 ```javascript
 import { useNavigate } from "react-router-dom";
 
@@ -719,10 +770,11 @@ navigate("/posts/123", { replace: true });
 ```
 
 **Link Navigation**:
+
 ```javascript
 import { Link } from "react-router-dom";
 
-<Link to="/dashboard">Dashboard</Link>
+<Link to="/dashboard">Dashboard</Link>;
 ```
 
 ---
@@ -734,6 +786,7 @@ import { Link } from "react-router-dom";
 **Purpose**: Prevent unnecessary re-renders when props haven't changed
 
 **Implementation** (`utils/memoComparisons.js`):
+
 ```javascript
 // Custom comparison functions for deep prop comparison
 export const createCommentComparison = () => (prevProps, nextProps) => {
@@ -752,6 +805,7 @@ const CommentItem = memo(({ comment, ... }) => {
 ```
 
 **Components Using Custom Comparisons**:
+
 - `CommentItem.jsx` - Deep comparison of comment props
 - `PostCard.jsx` - Deep comparison of post props
 - `AuthorAvatar.jsx` - Deep comparison of author props
@@ -759,24 +813,31 @@ const CommentItem = memo(({ comment, ... }) => {
 ### useMemo & useCallback
 
 **useMemo**: Memoize expensive calculations
+
 ```javascript
 const authorName = useMemo(() => author?.name || "Unknown", [author?.name]);
 const initials = useMemo(() => getAuthorInitial(authorName), [authorName]);
 ```
 
 **useCallback**: Memoize function references
+
 ```javascript
-const handleClick = useCallback((e) => {
-  // handler logic
-}, [dependencies]);
+const handleClick = useCallback(
+  (e) => {
+    // handler logic
+  },
+  [dependencies],
+);
 ```
 
 **When to Use**:
+
 - ✅ Expensive calculations (date formatting, filtering)
 - ✅ Stable function references passed to memoized children
 - ✅ Preventing object/array recreation on every render
 
 **When NOT to Use**:
+
 - ❌ Simple calculations (overhead > benefit)
 - ❌ Primitive values (no benefit)
 - ❌ Functions with frequently changing dependencies
@@ -784,17 +845,20 @@ const handleClick = useCallback((e) => {
 ### React Query Optimizations
 
 **Stale Time Configuration**:
+
 - Home posts: 1 minute (frequently updated)
 - User posts: 2 minutes (moderate updates)
 - Post details: 5 minutes (rarely changes)
 - Comments: 30 seconds (frequently updated)
 
 **Cache Invalidation**:
+
 - Mutations automatically invalidate related queries
 - Prevents stale data display
 - Ensures UI reflects latest server state
 
 **Query Keys**:
+
 - Hierarchical structure for efficient cache management
 - Enables partial cache invalidation
 - Example: Invalidating `userPostsKeys.all` clears all user post queries
@@ -806,24 +870,28 @@ const handleClick = useCallback((e) => {
 ### Getting Started
 
 1. **Install Dependencies**:
+
 ```bash
 cd frontend
 npm install
 ```
 
 2. **Environment Setup**:
-Create `.env` file:
+   Create `.env` file:
+
 ```env
 VITE_API_BASE_URL=http://localhost:3000
 FRONTEND_URL=http://localhost:5173
 ```
 
 3. **Start Development Server**:
+
 ```bash
 npm run dev
 ```
 
 4. **Build for Production**:
+
 ```bash
 npm run build
 ```
@@ -831,6 +899,7 @@ npm run build
 ### Code Style Guidelines
 
 **Component Structure**:
+
 ```javascript
 // 1. Imports (grouped)
 import React hooks
@@ -844,19 +913,19 @@ const ComponentName = memo(({ prop1, prop2 }) => {
   // 3. Hooks
   const [state, setState] = useState();
   const { data } = useQuery();
-  
+
   // 4. Memoized values
   const memoizedValue = useMemo(() => {}, [deps]);
-  
+
   // 5. Callbacks
   const handleClick = useCallback(() => {}, [deps]);
-  
+
   // 6. Effects
   useEffect(() => {}, [deps]);
-  
+
   // 7. Early returns
   if (loading) return <Loader />;
-  
+
   // 8. Render
   return <div>...</div>;
 }, comparisonFunction);
@@ -865,6 +934,7 @@ export default ComponentName;
 ```
 
 **Naming Conventions**:
+
 - Components: PascalCase (`PostCard.jsx`)
 - Hooks: camelCase starting with `use` (`useAuth.js`)
 - Utilities: camelCase (`postUtils.js`)
@@ -872,6 +942,7 @@ export default ComponentName;
 - Files: Match export name
 
 **File Organization**:
+
 - One component per file
 - Related components in same folder
 - Barrel exports (`index.js`) for convenience
@@ -881,6 +952,7 @@ export default ComponentName;
 **Example: Adding a "Like" Feature**
 
 1. **Create Service Function** (`services/postService.js`):
+
 ```javascript
 export const likePost = async (postId) => {
   const response = await axiosInstance.post(`/posts/${postId}/like`);
@@ -889,13 +961,16 @@ export const likePost = async (postId) => {
 ```
 
 2. **Create React Query Hook** (`hooks/postHooks/postMutations.js`):
+
 ```javascript
 export const useLikePost = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: likePost,
     onSuccess: (_, postId) => {
-      queryClient.invalidateQueries({ queryKey: postDetailKeys.detail(postId) });
+      queryClient.invalidateQueries({
+        queryKey: postDetailKeys.detail(postId),
+      });
       queryClient.invalidateQueries({ queryKey: homePostsKeys.all });
     },
   });
@@ -903,14 +978,15 @@ export const useLikePost = () => {
 ```
 
 3. **Use in Component**:
+
 ```javascript
 const LikeButton = ({ postId }) => {
   const likeMutation = useLikePost();
-  
+
   const handleLike = () => {
     likeMutation.mutate(postId);
   };
-  
+
   return <Button onClick={handleLike}>Like</Button>;
 };
 ```
@@ -918,10 +994,12 @@ const LikeButton = ({ postId }) => {
 ### Debugging Tips
 
 **React Query DevTools**:
+
 - Install: `@tanstack/react-query-devtools`
 - Shows query cache, mutations, and state
 
 **Common Issues**:
+
 1. **Stale Data**: Check `staleTime` and cache invalidation
 2. **Unnecessary Re-renders**: Check memoization and dependencies
 3. **Form Validation Errors**: Check Yup schema and form setup
@@ -1022,34 +1100,41 @@ const LikeButton = ({ postId }) => {
 ## 📚 Key Files Reference
 
 ### Entry Point
+
 - `main.jsx` - App initialization, providers setup, Suspense boundaries
 
 ### Routing
+
 - `App.jsx` - Route definitions, layout structure
 
 ### Authentication
+
 - `contexts/authContext.jsx` - Auth state provider
 - `hooks/authHooks/authHooks.js` - Auth operations
 - `utils/tokenUtils.js` - Token management
 - `utils/authPromise.js` - Auth initialization promise
 
 ### Data Fetching
+
 - `hooks/postHooks/postQueries.js` - Post queries
 - `hooks/postHooks/postMutations.js` - Post mutations
 - `hooks/commentHooks/commentQueries.js` - Comment queries
 - `hooks/commentHooks/commentMutations.js` - Comment mutations
 
 ### API Layer
+
 - `utils/axiosInstance.js` - Axios instance with interceptors
 - `services/` - API service functions
 
 ### Utilities
+
 - `utils/constants.js` - Application constants
 - `utils/postUtils.js` - Post-related utilities
 - `utils/memoComparisons.js` - Memo comparison functions
 - `utils/formSubmitWithToast.js` - Form submission wrapper
 
 ### Validation
+
 - `validations/` - Yup validation schemas
 
 ---
@@ -1102,7 +1187,7 @@ const handleDelete = () => {
   dialogRef.current?.openDialog(post);
 };
 
-<DeleteDialog ref={dialogRef} config={deleteConfig} />
+<DeleteDialog ref={dialogRef} config={deleteConfig} />;
 ```
 
 ### Pattern 4: Memoized Component
@@ -1118,21 +1203,25 @@ const Component = memo(({ data, onAction }) => {
 ## 🐛 Troubleshooting
 
 ### Issue: Forms not submitting
+
 - Check React Hook Form setup
 - Verify validation schema
 - Check onSubmit handler
 
 ### Issue: Stale data after mutation
+
 - Verify cache invalidation in mutation
 - Check query keys match
 - Ensure mutation calls invalidateQueries
 
 ### Issue: Unnecessary re-renders
+
 - Check memoization
 - Verify dependencies in hooks
 - Use custom comparison functions
 
 ### Issue: Token refresh not working
+
 - Check axios interceptor setup
 - Verify refresh token storage
 - Check token expiration logic
