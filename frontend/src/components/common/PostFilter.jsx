@@ -1,4 +1,4 @@
-import { useState, useEffect, useId, useTransition, useCallback } from "react";
+import { useState, useEffect, useId, useTransition } from "react";
 import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -8,19 +8,16 @@ import { Search } from "lucide-react";
 const useDebounce = (callback, delay) => {
   const [timer, setTimer] = useState(null);
 
-  return useCallback(
-    (...args) => {
-      if (timer) clearTimeout(timer);
-      const newTimer = setTimeout(() => {
-        callback(...args);
-      }, delay);
-      setTimer(newTimer);
-    },
-    [callback, delay, timer]
-  );
+  return (...args) => {
+    if (timer) clearTimeout(timer);
+    const newTimer = setTimeout(() => {
+      callback(...args);
+    }, delay);
+    setTimer(newTimer);
+  };
 };
 
-const PostFilter = ({
+export const PostFilter = ({
   placeholder = "Search posts...",
   onSearch, // Optional override for parent-controlled search
 }) => {
@@ -43,42 +40,39 @@ const PostFilter = ({
   }, [searchParams]);
 
   // Actual search logic (updates URL)
-  const performSearch = useCallback(
-    (query) => {
-        const isListingPage = location.pathname === "/" || location.pathname === "/dashboard";
-        
-        // Navigation logic for non-listing pages
-        if (!isListingPage) {
-            if (query) {
-                navigate(`/?search=${encodeURIComponent(query)}`);
-            } else {
-                navigate("/");
-            }
-            if (onSearch) onSearch(query);
-            return;
-        }
+  const performSearch = (query) => {
+      const isListingPage = location.pathname === "/" || location.pathname === "/dashboard";
+      
+      // Navigation logic for non-listing pages
+      if (!isListingPage) {
+          if (query) {
+              navigate(`/?search=${encodeURIComponent(query)}`);
+          } else {
+              navigate("/");
+          }
+          if (onSearch) onSearch(query);
+          return;
+      }
 
-        // URL update logic using transition for smoother UI
-        startTransition(() => {
-            setSearchParams((prev) => {
-                const newParams = new URLSearchParams(prev);
-                if (query) {
-                    newParams.set("search", query);
-                } else {
-                    newParams.delete("search");
-                }
-                // Reset page to 1 on new search
-                if (newParams.get("page")) {
-                    newParams.set("page", "1");
-                }
-                return newParams;
-            }, { replace: true });
-            
-            if (onSearch) onSearch(query);
-        });
-    },
-    [location.pathname, navigate, onSearch, setSearchParams]
-  );
+      // URL update logic using transition for smoother UI
+      startTransition(() => {
+          setSearchParams((prev) => {
+              const newParams = new URLSearchParams(prev);
+              if (query) {
+                  newParams.set("search", query);
+              } else {
+                  newParams.delete("search");
+              }
+              // Reset page to 1 on new search
+              if (newParams.get("page")) {
+                  newParams.set("page", "1");
+              }
+              return newParams;
+          }, { replace: true });
+          
+          if (onSearch) onSearch(query);
+      });
+  };
 
   // Debounced wrapper for typing
   const debouncedSearch = useDebounce(performSearch, 500);
@@ -121,5 +115,3 @@ const PostFilter = ({
     </form>
   );
 };
-
-export default PostFilter;

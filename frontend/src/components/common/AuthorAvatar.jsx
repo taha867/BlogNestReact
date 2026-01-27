@@ -1,13 +1,11 @@
-
-import { memo, useState, useCallback, useMemo } from "react";
+import { useState } from "react";
 import { getImageUrl } from "../../utils/imageUtils";
 import { getAuthorInitial } from "../../utils/authorUtils";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
-import { createAuthorComparison } from "../../utils/memoComparisons";
 
 
-const AuthorAvatar = memo(({ author, size = "md", className = "", fallbackBgColor = "bg-blue-600" }) => {
+export const AuthorAvatar = ({ author, size = "md", className = "", fallbackBgColor = "bg-blue-600" }) => {
   const authorName = author?.name || "Unknown";
   const authorImageUrl = getImageUrl(author?.image);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -28,35 +26,35 @@ const AuthorAvatar = memo(({ author, size = "md", className = "", fallbackBgColo
   const initials = getAuthorInitial(authorName);
 
   // Handle avatar click - open preview dialog
-  const handleAvatarClick = useCallback((e) => {
+  const handleAvatarClick = (e) => {
     e.stopPropagation(); // Prevent triggering parent click handlers
     if (authorImageUrl) {
       setIsPreviewOpen(true);
       setImageLoading(true);
       setImageError(false);
     }
-  }, [authorImageUrl]);
+  };
 
   // Handle image load in preview
-  const handleImageLoad = useCallback(() => {
+  const handleImageLoad = () => {
     setImageLoading(false);
-  }, []);
+  };
 
   // Handle image error in preview
-  const handleImageError = useCallback(() => {
+  const handleImageError = () => {
     setImageLoading(false);
     setImageError(true);
-  }, []);
+  };
 
   // Reset image state when dialog closes
-  const handleDialogChange = useCallback((open) => {
+  const handleDialogChange = (open) => {
     setIsPreviewOpen(open);
     if (!open) {
       // Reset states when dialog closes
       setImageLoading(true);
       setImageError(false);
     }
-  }, []);
+  };
 
   if (authorImageUrl) {
     return (
@@ -130,7 +128,7 @@ const AuthorAvatar = memo(({ author, size = "md", className = "", fallbackBgColo
       </span>
     </div>
   );
-}, createAuthorComparison());
+};
 
-export default AuthorAvatar;
+
 

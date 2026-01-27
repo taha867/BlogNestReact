@@ -2,15 +2,16 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { Loader2 } from "lucide-react";
 import { FormField } from "../../custom";
 import { signupSchema } from "../../../validations/authSchemas";
 import { useAuth } from "../../../hooks/authHooks/authHooks";
 import { createSubmitHandlerWithToast } from "../../../utils/formSubmitWithToast";
 
-const SignUpForm = () => {
+export const SignUpForm = () => {
   const { signup, isLoading } = useAuth();
 
-  const form = useForm({
+  const method = useForm({
     resolver: yupResolver(signupSchema),
     defaultValues: {
       name: "",
@@ -22,18 +23,16 @@ const SignUpForm = () => {
   });
 
   const onSubmit = async (data) => {
-    try {
       await signup(data);
-    } catch (error) {}
   };
 
-  const handleSubmit = createSubmitHandlerWithToast(form, onSubmit);
+  const handleSubmit = createSubmitHandlerWithToast(method, onSubmit);
 
   return (
-    <Form {...form}>
+    <Form {...method}>
       <form onSubmit={handleSubmit} className="space-y-3">
         <FormField
-          control={form.control}
+          control={method.control}
           name="name"
           type="text"
           label="Full name"
@@ -43,7 +42,7 @@ const SignUpForm = () => {
         />
 
         <FormField
-          control={form.control}
+          control={method.control}
           name="email"
           type="email"
           label="Email"
@@ -52,7 +51,7 @@ const SignUpForm = () => {
         />
 
         <FormField
-          control={form.control}
+          control={method.control}
           name="phone"
           type="tel"
           label="Phone"
@@ -61,7 +60,7 @@ const SignUpForm = () => {
         />
 
         <FormField
-          control={form.control}
+          control={method.control}
           name="password"
           type="password"
           label="Password"
@@ -72,7 +71,7 @@ const SignUpForm = () => {
         />
 
         <FormField
-          control={form.control}
+          control={method.control}
           name="confirmPassword"
           type="password"
           label="Confirm password"
@@ -86,13 +85,18 @@ const SignUpForm = () => {
           type="submit"
           variant="success"
           className="w-full h-11 font-medium"
-          disabled={isLoading}
+          disabled={isLoading || !method.formState.isDirty}
         >
-          {isLoading ? "Creating account..." : "Create account"}
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Creating account...
+            </>
+          ) : (
+            "Create account"
+          )}
         </Button>
       </form>
     </Form>
   );
 };
-
-export default SignUpForm;

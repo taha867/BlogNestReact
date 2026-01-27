@@ -1,13 +1,13 @@
-import { useCallback, useMemo, useTransition } from "react";
+import { useTransition } from "react";
 import { Link } from "react-router-dom";
 import { usePostComments } from "../../hooks/commentHooks/commentQueries";
 import { useAuth } from "../../hooks/authHooks/authHooks";
-import CommentItem from "./CommentItem";
-import CommentForm from "./CommentForm";
+import {CommentItem} from "./CommentItem";
+import {CommentForm} from "./CommentForm";
 import { Button } from "@/components/ui/button";
-import AppInitializer from "../common/AppInitializer";
+import {AppInitializer} from "../common/AppInitializer";
 
-const CommentSection = ({ postId }) => {
+export const CommentSection = ({ postId }) => {
   const { isAuthenticated } = useAuth();
   const [isPending, startTransition] = useTransition();
 
@@ -21,37 +21,32 @@ const CommentSection = ({ postId }) => {
   } = usePostComments(postId);
 
   // Flatten nested pages into a single array of comments
-  const allComments = useMemo(
-    () => data?.pages.flatMap((page) => page.comments || []) || [],
-    [data]
-  );
+  const allComments = data?.pages.flatMap((page) => page.comments || []) || [];
 
   // Get total comments count from the first page metadata with fallback
-  const totalComments = useMemo(() => {
-    const apiTotal = data?.pages[0]?.paginationOptions?.total;
-    if (apiTotal !== undefined && apiTotal !== null && apiTotal > 0) {
-      return apiTotal;
-    }
-    // If API says 0 or is missing, but we actually have comments, use the loaded count
-    return allComments.length;
-  }, [data, allComments]);
-
-  const commentsText = useMemo(
-    () => `${totalComments} ${totalComments === 1 ? "comment" : "comments"}`,
-    [totalComments]
-  );
-
+  const firstPagePagination = data?.pages[0]?.paginationOptions;
+  const apiTotal = firstPagePagination?.total;
   
-  const handleLoadMore = useCallback(() => {
+  let totalComments;
+  if (apiTotal !== undefined && apiTotal !== null && apiTotal > 0) {
+    totalComments = apiTotal;
+  } else {
+    // If API says 0 or is missing, but we actually have comments, use the loaded count
+    totalComments = allComments.length;
+  }
+
+  const commentsText = `${totalComments} ${totalComments === 1 ? "comment" : "comments"}`;
+
+  const handleLoadMore = () => {
     startTransition(() => {
       fetchNextPage();
     });
-  }, [fetchNextPage]);
+  };
 
   // Handle success imple refetch to page 1
-  const handleCommentSuccess = useCallback(() => {
+  const handleCommentSuccess = () => {
     refetch();
-  }, [refetch]);
+  };
 
   if (isLoading) {
     return (
@@ -131,4 +126,3 @@ const CommentSection = ({ postId }) => {
   );
 };
 
-export default CommentSection;

@@ -3,16 +3,20 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { Loader2 } from "lucide-react";
 import { FormField } from "../../custom";
 import { resetPasswordSchema } from "../../../validations/authSchemas";
 import { useAuth } from "../../../hooks/authHooks/authHooks";
 import { createSubmitHandlerWithToast } from "../../../utils/formSubmitWithToast";
+import { useSearchParams } from "react-router-dom";
 
-const ResetPasswordForm = ({ token }) => {
+export const ResetPasswordForm = () => {
   const { resetUserPassword, isLoading } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("token");
 
-  const form = useForm({
+  const method = useForm({
     resolver: yupResolver(resetPasswordSchema),
     defaultValues: {
       newPassword: "",
@@ -22,31 +26,27 @@ const ResetPasswordForm = ({ token }) => {
   });
 
   const onSubmit = async (data) => {
-    try {
-      // Pass as object since React Query's mutateAsync only passes first argument
-      const { newPassword, confirmPassword } = data;
-      await resetUserPassword({
-        token,
-        newPassword,
-        confirmPassword,
-      });
+    // Pass as object since React Query's mutateAsync only passes first argument
+    const { newPassword, confirmPassword } = data;
+    await resetUserPassword({
+      token,
+      newPassword,
+      confirmPassword,
+    });
 
-      // Redirect to signin after successful reset
-      setTimeout(() => {
-        navigate("/signin");
-      }, 1500);
-    } catch (error) {
-    
-    }
+    // Redirect to signin after successful reset
+    setTimeout(() => {
+      navigate("/signin");
+    }, 1500);
   };
 
-  const handleSubmit = createSubmitHandlerWithToast(form, onSubmit);
+  const handleSubmit = createSubmitHandlerWithToast(method, onSubmit);
 
   return (
-    <Form {...form}>
+    <Form {...method}>
       <form onSubmit={handleSubmit} className="space-y-3">
         <FormField
-          control={form.control}
+          control={method.control}
           name="newPassword"
           type="password"
           label="New Password"
@@ -56,7 +56,7 @@ const ResetPasswordForm = ({ token }) => {
         />
 
         <FormField
-          control={form.control}
+          control={method.control}
           name="confirmPassword"
           type="password"
           label="Confirm New Password"
@@ -68,10 +68,17 @@ const ResetPasswordForm = ({ token }) => {
         <Button
           type="submit"
           variant="success"
-          disabled={isLoading}
+          disabled={isLoading || !method.formState.isDirty}
           className="w-full h-11 font-medium"
         >
-          {isLoading ? "Resetting..." : "Reset Password"}
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Resetting...
+            </>
+          ) : (
+            "Reset Password"
+          )}
         </Button>
 
         <div className="text-center pt-2">
@@ -87,5 +94,3 @@ const ResetPasswordForm = ({ token }) => {
     </Form>
   );
 };
-
-export default ResetPasswordForm;

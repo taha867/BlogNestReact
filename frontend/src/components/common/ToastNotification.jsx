@@ -1,7 +1,6 @@
-
 import { Toaster } from "react-hot-toast";
 
-const ToastNotification = () => {
+export const ToastNotification = () => {
   return (
     <Toaster
       position="top-right"
@@ -46,5 +45,3 @@ const ToastNotification = () => {
     />
   );
 };
-
-export default ToastNotification;

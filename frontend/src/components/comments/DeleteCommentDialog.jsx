@@ -1,9 +1,8 @@
-
 import { forwardRef } from "react";
-import DeleteDialog from "../common/DeleteDialog";
+import { DeleteDialog } from "../common/DeleteDialog";
 import { useDeleteComment } from "../../hooks/commentHooks/commentMutations";
 
-const DeleteCommentDialog = forwardRef((props, ref) => {
+export const DeleteCommentDialog = forwardRef((props, ref) => {
   return (
     <DeleteDialog
       ref={ref}
@@ -14,8 +13,8 @@ const DeleteCommentDialog = forwardRef((props, ref) => {
 
           return (
             <>
-              Are you sure you want to delete this comment? This action cannot be
-              undone.
+              Are you sure you want to delete this comment? This action cannot
+              be undone.
               {hasReplies && (
                 <span className="block mt-1 text-xs text-gray-500">
                   This comment has {payload.replies.length}{" "}
@@ -28,7 +27,6 @@ const DeleteCommentDialog = forwardRef((props, ref) => {
         },
         mutationHook: useDeleteComment,
         mutationCall: (payload) => {
-          
           return payload.id;
         },
         payloadFormatter: (comment) => ({
@@ -39,6 +37,3 @@ const DeleteCommentDialog = forwardRef((props, ref) => {
     />
   );
 });
-
-export default DeleteCommentDialog;
-

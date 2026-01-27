@@ -1,24 +1,23 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useHomePosts } from "../../hooks/postHooks/postQueries";
 import { calculateTotalPages } from "../../services/postService";
-import PostCard from "../common/PostCard.jsx";
-import PaginationControls from "../common/PaginationControls.jsx";
+import { PostCard } from "../common/PostCard.jsx";
+import { PaginationControls } from "../common/PaginationControls.jsx";
 import { POSTS_PER_PAGE } from "../../utils/constants";
-import AppInitializer from "../common/AppInitializer";
+import { AppInitializer } from "../common/AppInitializer";
 
-const Home = () => {
-  
+export const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
-  const limit = POSTS_PER_PAGE; 
+  const limit = POSTS_PER_PAGE;
 
   // It will refetch automatically when searchQuery (from URL) changes
   const { data, isLoading, isFetching } = useHomePosts(
     currentPage,
     limit,
-    searchQuery
+    searchQuery,
   );
   const posts = data?.posts || [];
   const pagination = data?.pagination || {};
@@ -30,9 +29,9 @@ const Home = () => {
   const showPagination = hasPosts && totalPages > 1;
 
   // Handle page changes - React Query handles fetching automatically
-  const handlePageChange = useCallback((newPage) => {
+  const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
-  }, []);
+  };
 
   // Reset to first page when search query changes (URL param)
   useEffect(() => {
@@ -55,8 +54,8 @@ const Home = () => {
           {!hasPosts ? (
             <div className="flex flex-col items-center justify-center py-20">
               <p className="text-gray-500 text-center text-lg">
-                {searchQuery 
-                  ? `No posts found matching "${searchQuery}".` 
+                {searchQuery
+                  ? `No posts found matching "${searchQuery}".`
                   : "No posts found. Check back later."}
               </p>
             </div>
@@ -84,5 +83,3 @@ const Home = () => {
     </div>
   );
 };
-
-export default Home;

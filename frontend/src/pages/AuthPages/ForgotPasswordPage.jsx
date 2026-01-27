@@ -1,7 +1,7 @@
-import ForgotPassword from "../../components/auth/ForgotPassword.jsx";
+import {ForgotPassword} from "../../components/auth/ForgotPassword.jsx";
 
-const ForgotPasswordPage = () => {
+export const ForgotPasswordPage = () => {
   return <ForgotPassword />;
 };
 
-export default ForgotPasswordPage;
+

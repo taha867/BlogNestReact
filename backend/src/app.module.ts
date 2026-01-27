@@ -3,7 +3,7 @@ import { dataSourceOptions } from "./config/data-source-options";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
-import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
+import { ThrottlerModule } from "@nestjs/throttler";
 import { UsersModule } from "./users/users.module";
 import { PostsModule } from "./posts/posts.module";
 import { CommentsModule } from "./comments/comments.module";
@@ -22,7 +22,6 @@ import { UserSubscriber } from "./users/subscribers/user.subscriber";
       subscribers: [UserSubscriber], // Register TypeORM entity subscriber
     }),
     ThrottlerModule.forRoot([
-      
       {
         name: "login", // Login endpoint
         ttl: 60000, // 1 minute
@@ -38,10 +37,6 @@ import { UserSubscriber } from "./users/subscribers/user.subscriber";
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: ThrottlerGuard, // rate limiting guard, throws 429 if limit exceeds
     },
   ],
 })

@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FormField, FormSelect, FormFileInput } from "../../custom";
 import { postSchema } from "../../../validations/postSchemas";
@@ -10,12 +11,12 @@ import { useCreatePost } from "../../../hooks/postHooks/postMutations";
 import { POST_STATUS } from "../../../utils/constants";
 import { createSubmitHandlerWithToast } from "../../../utils/formSubmitWithToast";
 
-const CreatePostForm = ({ onPostCreated }) => {
+export const CreatePostForm = ({ onPostCreated }) => {
   const [isFormPending, startFormTransition] = useTransition();
 
-    const createPostMutation = useCreatePost();
+  const createPostMutation = useCreatePost();
 
-  const form = useForm({
+  const method = useForm({
     resolver: yupResolver(postSchema),
     defaultValues: {
       title: "",
@@ -27,34 +28,28 @@ const CreatePostForm = ({ onPostCreated }) => {
   });
 
   const onSubmit = async (data) => {
-    try {
-      // Create FormData for multipart/form-data
-      const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("body", data.body);
-      formData.append("status", data.status);
-      
-      // Append file if selected
-      if (data.image instanceof File) {
-        formData.append("image", data.image);
-      }
+    // Create FormData for multipart/form-data
+    const { title, body, status } = data;
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("body", body);
+    formData.append("status", status);
 
-      
-      await createPostMutation.mutateAsync(formData);
-
-      
-      startFormTransition(() => {
-        form.reset();
-        // Switch to list tab after successful creation
-        onPostCreated?.();
-      });
-    } catch (error) {
-      
+    // Append file if selected
+    if (data.image instanceof File) {
+      formData.append("image", data.image);
     }
+
+    await createPostMutation.mutateAsync(formData);
+
+    startFormTransition(() => {
+      method.reset();
+      // Switch to list tab after successful creation
+      onPostCreated?.();
+    });
   };
 
-
-  const handleSubmit = createSubmitHandlerWithToast(form, onSubmit);
+  const handleSubmit = createSubmitHandlerWithToast(method, onSubmit);
 
   return (
     <Card>
@@ -62,10 +57,10 @@ const CreatePostForm = ({ onPostCreated }) => {
         <CardTitle>Create New Post</CardTitle>
       </CardHeader>
       <CardContent>
-        <Form {...form}>
+        <Form {...method}>
           <form onSubmit={handleSubmit} className="space-y-4">
             <FormField
-              control={form.control}
+              control={method.control}
               name="title"
               type="text"
               label="Title"
@@ -73,7 +68,7 @@ const CreatePostForm = ({ onPostCreated }) => {
             />
 
             <FormField
-              control={form.control}
+              control={method.control}
               name="body"
               type="textarea"
               label="Content"
@@ -83,7 +78,7 @@ const CreatePostForm = ({ onPostCreated }) => {
             />
 
             <FormSelect
-              control={form.control}
+              control={method.control}
               name="status"
               label="Status"
               placeholder="Select post status"
@@ -94,7 +89,7 @@ const CreatePostForm = ({ onPostCreated }) => {
             />
 
             <FormFileInput
-              control={form.control}
+              control={method.control}
               name="image"
               label="Post Image (Optional)"
               maxSizeMB={5}
@@ -103,14 +98,26 @@ const CreatePostForm = ({ onPostCreated }) => {
             <Button
               type="submit"
               variant="success"
-              disabled={createPostMutation.isPending || isFormPending}
+              disabled={
+                createPostMutation.isPending ||
+                isFormPending ||
+                !method.formState.isDirty
+              }
               className="w-full"
             >
-              {createPostMutation.isPending
-                ? "Creating..."
-                : isFormPending
-                ? "Processing..."
-                : "Create Post"}
+              {createPostMutation.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating...
+                </>
+              ) : isFormPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                "Create Post"
+              )}
             </Button>
           </form>
         </Form>
@@ -118,5 +125,3 @@ const CreatePostForm = ({ onPostCreated }) => {
     </Card>
   );
 };
-
-export default CreatePostForm;

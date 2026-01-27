@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -17,15 +18,13 @@ import { useImperativeDialog } from "../../../hooks/useImperativeDialog";
 import { POST_STATUS } from "../../../utils/constants";
 import { createSubmitHandlerWithToast } from "../../../utils/formSubmitWithToast";
 
-const EditPostForm = forwardRef((_props, ref) => {
-
+export const EditPostForm = forwardRef((_props, ref) => {
   const {
     isOpen,
     payload: currentPost,
     openDialog: openDialogState,
     closeDialog: closeDialogState,
   } = useImperativeDialog(null);
-
 
   const updatePostMutation = useUpdatePost();
 
@@ -43,10 +42,10 @@ const EditPostForm = forwardRef((_props, ref) => {
         }
       },
     }),
-    [openDialogState, closeDialogState, updatePostMutation.isPending]
+    [openDialogState, closeDialogState, updatePostMutation.isPending],
   );
 
-  const form = useForm({
+  const method = useForm({
     resolver: yupResolver(postSchema),
     defaultValues: {
       title: "",
@@ -60,47 +59,44 @@ const EditPostForm = forwardRef((_props, ref) => {
   // Update form when post changes
   useEffect(() => {
     if (currentPost) {
-      form.reset({
-        title: currentPost.title || "",
-        body: currentPost.body || "",
-        status: currentPost.status || POST_STATUS.DRAFT,
-        image: currentPost.image || null, // Set existing image URL for preview
+      const { title, body, status, image } = currentPost;
+      method.reset({
+        title: title || "",
+        body: body || "",
+        status: status || POST_STATUS.DRAFT,
+        image: image || null, // Set existing image URL for preview
       });
     }
-  }, [currentPost, form]);
+  }, [currentPost, method]);
 
   const onSubmit = async (data) => {
     if (!currentPost?.id) return;
 
-    try {
-      // Create FormData for multipart/form-data
-      const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("body", data.body);
-      formData.append("status", data.status);
+    // Create FormData for multipart/form-data
+    const{title,body,status,image}=data;
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("body", body);
+    formData.append("status", status);
 
-      
-      if (data.image instanceof File) {
-        // New file selected
-        formData.append("image", data.image);
-      } else if (data.image === null) {
-        // Image was removed
-        formData.append("image", "");
-      }
-     
-            await updatePostMutation.mutateAsync({
-        postId: currentPost.id,
-        formData,
-        previousStatus: currentPost.status,
-      });
-
-      closeDialogState();
-    } catch (error) {
-      
+    if (image instanceof File) {
+      // New file selected
+      formData.append("image", image);
+    } else if (image === null) {
+      // Image was removed
+      formData.append("image", "");
     }
+
+    await updatePostMutation.mutateAsync({
+      postId: currentPost.id,
+      formData,
+      previousStatus: currentPost.status,
+    });
+
+    closeDialogState();
   };
 
-  const handleSubmit = createSubmitHandlerWithToast(form, onSubmit);
+  const handleSubmit = createSubmitHandlerWithToast(method, onSubmit);
 
   const handleClose = () => {
     if (!updatePostMutation.isPending) {
@@ -118,10 +114,10 @@ const EditPostForm = forwardRef((_props, ref) => {
           </DialogDescription>
         </DialogHeader>
 
-        <Form {...form}>
+        <Form {...method}>
           <form onSubmit={handleSubmit} className="space-y-4">
             <FormField
-              control={form.control}
+              control={method.control}
               name="title"
               type="text"
               label="Title"
@@ -129,7 +125,7 @@ const EditPostForm = forwardRef((_props, ref) => {
             />
 
             <FormField
-              control={form.control}
+              control={method.control}
               name="body"
               type="textarea"
               label="Content"
@@ -139,7 +135,7 @@ const EditPostForm = forwardRef((_props, ref) => {
             />
 
             <FormSelect
-              control={form.control}
+              control={method.control}
               name="status"
               label="Status"
               placeholder="Select post status"
@@ -150,7 +146,7 @@ const EditPostForm = forwardRef((_props, ref) => {
             />
 
             <FormFileInput
-              control={form.control}
+              control={method.control}
               name="image"
               label="Post Image (Optional)"
               maxSizeMB={5}
@@ -171,10 +167,19 @@ const EditPostForm = forwardRef((_props, ref) => {
               <Button
                 type="submit"
                 variant="success"
-                disabled={updatePostMutation.isPending}
+                disabled={
+                  updatePostMutation.isPending || !method.formState.isDirty
+                }
                 className="flex-1"
               >
-                {updatePostMutation.isPending ? "Updating..." : "Update Post"}
+                {updatePostMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  "Update Post"
+                )}
               </Button>
             </div>
           </form>
@@ -183,5 +188,3 @@ const EditPostForm = forwardRef((_props, ref) => {
     </Dialog>
   );
 });
-
-export default EditPostForm;

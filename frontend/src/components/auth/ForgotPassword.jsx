@@ -1,13 +1,10 @@
 import { Link } from "react-router-dom";
-import ForgotPasswordForm from "./form/ForgotPasswordForm.jsx";
-import AuthLayout from "./AuthLayout";
+import { ForgotPasswordForm } from "./form/ForgotPasswordForm.jsx";
+import {AuthLayout} from "./AuthLayout";
 
-const ForgotPassword = () => {
+export const ForgotPassword = () => {
   return (
-    <AuthLayout
-      title="Reset password"
-      subtitle="We'll email you a reset link"
-    >
+    <AuthLayout title="Reset password" subtitle="We'll email you a reset link">
       <div className="space-y-4">
         <ForgotPasswordForm />
 
@@ -24,5 +21,3 @@ const ForgotPassword = () => {
     </AuthLayout>
   );
 };
-
-export default ForgotPassword;

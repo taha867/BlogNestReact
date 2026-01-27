@@ -1,16 +1,16 @@
-import { memo, useMemo, useState } from "react";
+import { useState } from "react";
 import { ImageIcon } from "lucide-react";
 import { usePostDetail } from "../../hooks/postHooks/postQueries";
-import AppInitializer from "../common/AppInitializer";
+import {AppInitializer} from "../common/AppInitializer";
 import {
   calculateReadTime,
   formatPostDate,
   getPostImageUrl,
   getAuthorInfo,
 } from "../../utils/postUtils";
-import AuthorAvatar from "../common/AuthorAvatar";
+import {AuthorAvatar} from "../common/AuthorAvatar";
 
-const PostDetailContent = memo(({ postId }) => {
+export const PostDetailContent = ({ postId }) => {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -18,8 +18,8 @@ const PostDetailContent = memo(({ postId }) => {
 
   const { createdAt, body, author, image, title} = post || {};
 
-  const formattedDate = useMemo(() => formatPostDate(createdAt), [createdAt]);
-  const readTime = useMemo(() => calculateReadTime(body), [body]);
+  const formattedDate = formatPostDate(createdAt);
+  const readTime = calculateReadTime(body);
   const { name: authorName } = getAuthorInfo(author);
   const imageUrl = getPostImageUrl(image);
   const showPlaceholder = !imageUrl || imageError;
@@ -39,8 +39,8 @@ const PostDetailContent = memo(({ postId }) => {
   return (
     <article className="max-w-4xl mx-auto px-4 py-12 md:py-16">
       {/* Header Section */}
-      <header className="mb-10 text-center md:text-left">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight tracking-tight">
+      <header className="mb-10 text-center md:text-left overflow-hidden">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight tracking-tight break-all">
           {title}
         </h1>
 
@@ -84,12 +84,10 @@ const PostDetailContent = memo(({ postId }) => {
 
       {/* Post Body - Typography Enhanced */}
       <div className="prose prose-lg md:prose-xl prose-slate max-w-none mx-auto">
-        <p className="text-gray-800 leading-relaxed whitespace-pre-wrap break-words">
+        <p className="text-gray-800 leading-relaxed whitespace-pre-wrap break-all">
           {body}
         </p>
       </div>
     </article>
   );
-});
-
-export default PostDetailContent;
+};

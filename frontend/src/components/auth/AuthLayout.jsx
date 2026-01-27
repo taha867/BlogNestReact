@@ -1,15 +1,16 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import CLOUDS from "vanta/dist/vanta.clouds.min";
 
-const AuthLayout = ({ children, title, subtitle }) => {
-  const [vantaEffect, setVantaEffect] = useState(null);
+export const AuthLayout = ({ children, title, subtitle }) => {
   const vantaRef = useRef(null);
+  const vantaEffectRef = useRef(null);
 
   useEffect(() => {
-    if (!vantaEffect && vantaRef.current) {
+    // Only initialize if it hasn't been initialized and the ref is available
+    if (!vantaEffectRef.current && vantaRef.current) {
       try {
-        const effect = CLOUDS({
+        vantaEffectRef.current = CLOUDS({
           el: vantaRef.current,
           THREE: THREE,
           mouseControls: true,
@@ -17,24 +18,27 @@ const AuthLayout = ({ children, title, subtitle }) => {
           gyroControls: false,
           minHeight: 200.0,
           minWidth: 200.0,
-          skyColor: 0x68b8d7, // Light blue sky
-          cloudColor: 0xadc1de, // White/Greyish clouds
-          cloudShadowColor: 0x183550, // Darker shadow for depth
-          sunColor: 0xff9919, // Warm sun 
-          sunGlareColor: 0xff6633, 
+          skyColor: 0x68b8d7,
+          cloudColor: 0xadc1de,
+          cloudShadowColor: 0x183550,
+          sunColor: 0xff9919,
+          sunGlareColor: 0xff6633,
           sunlightColor: 0xff9933,
-          speed: 1.0, // Gentle movement
+          speed: 1.0,
         });
-        setVantaEffect(effect);
       } catch (error) {
         console.error("Failed to initialize Vanta effect:", error);
       }
     }
-    //cleanup
+
+    // Explicit cleanup to destroy the WebGL instance
     return () => {
-      if (vantaEffect) vantaEffect.destroy();
+      if (vantaEffectRef.current) {
+        vantaEffectRef.current.destroy();
+        vantaEffectRef.current = null;
+      }
     };
-  }, [vantaEffect]);
+  }, []); // Run once on mount
 
   return (
     <div
@@ -58,11 +62,7 @@ const AuthLayout = ({ children, title, subtitle }) => {
           )}
           {children}
         </div>
-        
-        
       </div>
     </div>
   );
 };
-
-export default AuthLayout;

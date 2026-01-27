@@ -1,27 +1,21 @@
-import { memo, useMemo, useState, useEffect, useCallback } from "react";
-import { Link, useLocation} from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, PlusCircle } from "lucide-react";
 import { useAuth } from "../hooks/authHooks/authHooks";
-import UserProfileMenu from "./profile/UserProfileMenu";
-import PostFilter from "./common/PostFilter";
+import { UserProfileMenu } from "./profile/UserProfileMenu";
+import { PostFilter } from "./common/PostFilter";
 
-const Navbar = memo(() => {
+export const Navbar = () => {
   const { isAuthenticated } = useAuth();
   const location = useLocation(); //tells where user is rignt now (current path, query string, hash)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Dynamic navigation links based on authentication status
-  const links = useMemo(() => {
-    const baseLinks = [{ label: "Home", to: "/" }];
-    if (isAuthenticated) {
-      return [
-        ...baseLinks,
-        { label: "My Articles", to: "/dashboard" },
-      ];
-    }
-    return baseLinks;
-  }, [isAuthenticated]);
+  const baseLinks = [{ label: "Home", to: "/" }];
+  const links = isAuthenticated 
+    ? [...baseLinks, { label: "My Articles", to: "/dashboard" }]
+    : baseLinks;
 
   const isActive = (path) => location.pathname === path;
 
@@ -53,19 +47,18 @@ const Navbar = memo(() => {
     };
   }, [isMobileMenuOpen]);
 
-  const toggleMobileMenu = useCallback(() => {
+  const toggleMobileMenu = () => {
     setIsMobileMenuOpen((prev) => !prev);
-  }, []);
+  };
 
-  const closeMobileMenu = useCallback(() => {
+  const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
-  }, []);
+  };
 
   return (
     <>
       <nav className="sticky top-0 z-40 border-b bg-white/85 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center px-4">
-          
           <div className="flex-shrink-0 flex items-center gap-3">
             {/* Mobile Menu Button */}
             <button
@@ -116,9 +109,7 @@ const Navbar = memo(() => {
 
           {/* Search Bar (Centered/Right) */}
           <div className="hidden lg:flex flex-1 max-w-md mx-4">
-            <PostFilter
-              placeholder="Search posts..."
-            />
+            <PostFilter placeholder="Search posts..." />
           </div>
 
           {/* Auth Actions */}
@@ -159,8 +150,8 @@ const Navbar = memo(() => {
                       isActive("/signup")
                         ? "outline"
                         : isActive("/signin")
-                        ? "ghost"
-                        : "default"
+                          ? "ghost"
+                          : "default"
                     }
                     className={
                       isActive("/signup")
@@ -249,6 +240,4 @@ const Navbar = memo(() => {
       </div>
     </>
   );
-});
-
-export default Navbar;
+};

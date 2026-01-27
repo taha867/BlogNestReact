@@ -63,6 +63,7 @@ export const ERROR_MESSAGES = {
   COMMENT_UPDATE_FAILED: "Unable to update the requested comment",
   POST_ID_REQUIRED: "Post ID is required",
   EITHER_POST_ID_OR_PARENT_ID_REQUIRED: "Either postId or parentId is required",
+  NESTED_COMMENTS_LIMIT_REACHED: "Replies are only allowed on top-level comments",
 
   // General Errors
   INTERNAL_SERVER_ERROR: "Internal server error",

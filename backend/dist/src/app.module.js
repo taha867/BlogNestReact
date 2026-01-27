@@ -50,10 +50,6 @@ exports.AppModule = AppModule = __decorate([
                 provide: core_1.APP_GUARD,
                 useClass: auth_guard_1.AuthGuard,
             },
-            {
-                provide: core_1.APP_GUARD,
-                useClass: throttler_1.ThrottlerGuard, // rate limiting guard, throws 429 if limit exceeds
-            },
         ],
     })
 ], AppModule);

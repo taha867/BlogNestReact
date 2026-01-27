@@ -1,8 +1,8 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../../hooks/authHooks/authHooks.js";
-import AppInitializer from "./AppInitializer.jsx";
+import {AppInitializer} from "./AppInitializer.jsx";
 
-const AuthRoute = () => {
+export const AuthRoute = () => {
   const { isAuthenticated, isLoading } = useAuth();
 
   // Show global app initializer while checking authentication
@@ -19,4 +19,3 @@ const AuthRoute = () => {
   return <Outlet />;
 };
 
-export default AuthRoute;

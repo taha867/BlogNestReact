@@ -1,5 +1,4 @@
-
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef } from "react";
 import {
   FormControl,
   FormField as ShadcnFormField,
@@ -25,64 +24,58 @@ export const FormFileInput = ({
   const fileInputRef = useRef(null);
 
   // Handle file selection - only create preview, don't upload
-  const handleFileChange = useCallback(
-    (field, event) => {
-      const file = event.target.files?.[0];
-      if (!file) {
-        field.onChange(null);
-        setPreview(null);
-        return;
-      }
-
-      // Validate file type
-      if (!file.type.startsWith("image/")) {
-        toast.error("Only image files are allowed");
-        if (fileInputRef.current) {
-          fileInputRef.current.value = "";
-        }
-        return;
-      }
-
-      // Validate file size
-      const maxSize = maxSizeMB * 1024 * 1024;
-      if (file.size > maxSize) {
-        toast.error(`File size must be less than ${maxSizeMB}MB`);
-        if (fileInputRef.current) {
-          fileInputRef.current.value = "";
-        }
-        return;
-      }
-
-      // Create preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-
-      // Store file object in form field (will be sent to backend)
-      field.onChange(file);
-    },
-    [maxSizeMB]
-  );
-
-  // Handle remove file (including clearing existing image preview)
-  const handleRemove = useCallback(
-    (field) => {
+  const handleFileChange = (field, event) => {
+    const file = event.target.files?.[0];
+    if (!file) {
       field.onChange(null);
       setPreview(null);
-      setHideExisting(true);
+      return;
+    }
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("Only image files are allowed");
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
-    },
-    []
-  );
+      return;
+    }
+
+    // Validate file size
+    const maxSize = maxSizeMB * 1024 * 1024;
+    if (file.size > maxSize) {
+      toast.error(`File size must be less than ${maxSizeMB}MB`);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      return;
+    }
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+
+    // Store file object in form field (will be sent to backend)
+    field.onChange(file);
+  };
+
+  // Handle remove file (including clearing existing image preview)
+  const handleRemove = (field) => {
+    field.onChange(null);
+    setPreview(null);
+    setHideExisting(true);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
 
   // Handle button click to trigger file input
-  const handleButtonClick = useCallback(() => {
+  const handleButtonClick = () => {
     fileInputRef.current?.click();
-  }, []);
+  };
 
   // Generate unique ID for accessibility
   const fieldId = `${name}-file-input`;

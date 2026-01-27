@@ -56,6 +56,11 @@ export class CommentsService {
         throw new NotFoundException(PARENT_COMMENT_NOT_FOUND);
       }
 
+      // Restrict nesting to 2 levels: parent of a reply must be a top-level comment (parentId: null)
+      if (parentComment.parentId !== null) {
+        throw new BadRequestException(ERROR_MESSAGES.NESTED_COMMENTS_LIMIT_REACHED);
+      }
+
       finalPostId = parentComment.postId;
     } else {
       // This is a top-level comment

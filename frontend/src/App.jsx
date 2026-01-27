@@ -1,20 +1,20 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import DashboardPage from "./pages/DashboardPage.jsx";
-import CreatePostPage from "./pages/CreatePostPage.jsx";
-import HomePage from "./pages/HomePage.jsx";
-import PostDetailPage from "./pages/PostDetailPage.jsx";
-import SignInPage from "./pages/AuthPages/SignInPage.jsx";
-import SignUpPage from "./pages/AuthPages/SignUpPage.jsx";
-import ForgotPasswordPage from "./pages/AuthPages/ForgotPasswordPage.jsx";
-import ResetPasswordPage from "./pages/AuthPages/ResetPasswordPage.jsx";
-import ProfilePage from "./pages/ProfilePage.jsx";
-import Navbar from "./components/Navbar.jsx";
-import Footer from "./components/Footer.jsx";
-import ProtectedRoute from "./components/common/ProtectedRoute.jsx";
-import AuthRoute from "./components/common/AuthRouteProtection.jsx";
-import ToastNotification from "./components/common/ToastNotification.jsx";
+import {DashboardPage} from "./pages/DashboardPage.jsx";
+import {CreatePostPage} from "./pages/CreatePostPage.jsx";
+import {HomePage} from "./pages/HomePage.jsx";
+import {PostDetailPage} from "./pages/PostDetailPage.jsx";
+import {SignInPage} from "./pages/AuthPages/SignInPage.jsx";
+import {SignUpPage} from "./pages/AuthPages/SignUpPage.jsx";
+import {ForgotPasswordPage} from "./pages/AuthPages/ForgotPasswordPage.jsx";
+import {ResetPasswordPage} from "./pages/AuthPages/ResetPasswordPage.jsx";
+import {ProfilePage} from "./pages/ProfilePage.jsx";
+import {Navbar} from "./components/Navbar.jsx";
+import {Footer} from "./components/Footer.jsx";
+import {ProtectedRoute} from "./components/common/ProtectedRoute.jsx";
+import {AuthRoute} from "./components/common/AuthRouteProtection.jsx";
+import {ToastNotification} from "./components/common/ToastNotification.jsx";
 
-const App = () => {
+export const App = () => {
   return (
     <Router>
       <div className="min-h-screen bg-background flex flex-col">
@@ -53,4 +53,3 @@ const App = () => {
   );
 };
 
-export default App;

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useImperativeDialog } from "../../hooks/useImperativeDialog";
 
-const DeleteDialog = forwardRef(({ config }, ref) => {
+export const DeleteDialog = forwardRef(({ config }, ref) => {
   const {
     title,
     descriptionFormatter,
@@ -119,4 +119,4 @@ const DeleteDialog = forwardRef(({ config }, ref) => {
   );
 });
 
-export default DeleteDialog;
+

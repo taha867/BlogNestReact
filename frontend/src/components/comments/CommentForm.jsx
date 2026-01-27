@@ -1,14 +1,15 @@
-import { useState, useCallback, useEffect, memo } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { Loader2 } from "lucide-react";
 import { FormField } from "../custom";
 import { useCreateComment } from "../../hooks/commentHooks/commentMutations";
 import { createSubmitHandlerWithToast } from "../../utils/formSubmitWithToast";
 import { commentSchema } from "../../validations/commentSchemas";
 
-const CommentForm = ({
+export const CommentForm = ({
   postId,
   parentId = null,
   onSuccess,
@@ -23,7 +24,7 @@ const CommentForm = ({
 
   const isEditMode = !!initialValue && !!onUpdate;
 
-  const form = useForm({
+  const method = useForm({
     resolver: yupResolver(commentSchema),
     defaultValues: {
       body: initialValue || "",
@@ -31,8 +32,7 @@ const CommentForm = ({
     mode: "onChange",
   });
 
-  
-  const { reset: formReset, handleSubmit: formHandleSubmit } = form;
+  const { reset: formReset, handleSubmit: formHandleSubmit } = method;
 
   // Update form when initialValue changes (for edit mode)
   // Use formReset instead of form object to avoid dependency on entire form
@@ -40,77 +40,67 @@ const CommentForm = ({
     if (isEditMode && initialValue !== null) {
       formReset({ body: initialValue });
     }
-  }, [initialValue, formReset]);
+  }, [isEditMode, initialValue, formReset]);
 
-  const onSubmit = useCallback(
-    async (data) => {
-      
-      if (initialValue && onUpdate) {
-        setIsSubmitting(true);
-        try {
-          await onUpdate(data.body);
-          
-        } catch (error) {
-        
-        } finally {
-          setIsSubmitting(false);
-        }
-        return;
-      }
-
-      // Create mode: create new comment
-      if (!postId && !parentId) return;
-
+  const onSubmit = async (data) => {
+    if (initialValue && onUpdate) {
       setIsSubmitting(true);
       try {
-        await createCommentMutation.mutateAsync({
-          body: data.body,
-          postId: parentId ? undefined : postId,
-          parentId: parentId || undefined,
-        });
-
-        // Reset form on success using stable formReset reference
-        formReset({ body: "" });
-
-        // Call optional success callback
-        if (onSuccess) {
-          onSuccess();
-        }
+        await onUpdate(data.body);
       } catch (error) {
-        
       } finally {
         setIsSubmitting(false);
       }
-    },
-    [
-      initialValue, // Used to determine edit mode
-      onUpdate,
-      postId,
-      parentId,
-      createCommentMutation,
-      formReset,
-      onSuccess,
-    ]
-  );
+      return;
+    }
 
-  
+    // Create mode: create new comment
+    if (!postId && !parentId) return;
+
+    setIsSubmitting(true);
+    try {
+      await createCommentMutation.mutateAsync({
+        body: data.body,
+        postId: parentId ? undefined : postId,
+        parentId: parentId || undefined,
+      });
+
+      // Reset form on success using stable formReset reference
+      formReset({ body: "" });
+
+      // Call optional success callback
+      if (onSuccess) {
+        onSuccess();
+      }
+    } catch (error) {
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const isPending = isSubmitting || createCommentMutation.isPending;
-  
+
   // Determine button text based on state
   const buttonText = isPending
-    ? (isEditMode ? "Saving..." : "Posting...")
-    : (isEditMode ? "Save" : (parentId ? "Reply" : "Post"));
+    ? isEditMode
+      ? "Saving..."
+      : "Posting..."
+    : isEditMode
+      ? "Save"
+      : parentId
+        ? "Reply"
+        : "Post";
 
   // Create handleSubmit - formHandleSubmit is stable from react-hook-form
   const handleSubmit = isEditMode
     ? formHandleSubmit(onSubmit) // Edit mode: no toast, parent handles it
-    : createSubmitHandlerWithToast(form, onSubmit); // Create mode: use toast
+    : createSubmitHandlerWithToast(method, onSubmit); // Create mode: use toast
 
   return (
-    <Form {...form}>
+    <Form {...method}>
       <form onSubmit={handleSubmit} className="space-y-3">
         <FormField
-          control={form.control}
+          control={method.control}
           name="body"
           type="textarea"
           placeholder={placeholder}
@@ -129,14 +119,27 @@ const CommentForm = ({
               Cancel
             </Button>
           )}
-          <Button type="submit" variant="success" disabled={isPending} size="sm">
-            {buttonText}
+          <Button
+            type="submit"
+            variant="success"
+            disabled={isPending || !method.formState.isDirty}
+            size="sm"
+          >
+            {isPending ? (
+              <>
+                <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                {isEditMode ? "Saving..." : "Posting..."}
+              </>
+            ) : isEditMode ? (
+              "Save"
+            ) : parentId ? (
+              "Reply"
+            ) : (
+              "Post"
+            )}
           </Button>
         </div>
       </form>
     </Form>
   );
 };
-
-
-export default memo(CommentForm);

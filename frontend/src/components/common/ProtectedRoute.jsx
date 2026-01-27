@@ -2,9 +2,9 @@
 
 import { Navigate, useLocation, Outlet } from "react-router-dom";
 import { useAuth } from "../../hooks/authHooks/authHooks";
-import AppInitializer from "./AppInitializer.jsx";
+import {AppInitializer} from "./AppInitializer.jsx";
 
-const ProtectedRoute = () => {
+export const ProtectedRoute = () => {
   const { isAuthenticated, isLoading } = useAuth();
   // useLocation() is used to capture the current URL so you can remember it and potentially redirect
   // the user back there after they authenticate
@@ -23,4 +23,4 @@ const ProtectedRoute = () => {
   return <Outlet />;
 };
 
-export default ProtectedRoute;
+

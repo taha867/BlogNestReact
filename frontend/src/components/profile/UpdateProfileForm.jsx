@@ -1,54 +1,55 @@
-import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { Loader2 } from "lucide-react";
 import { FormField, FormFileInput } from "../custom";
 import { updateProfileSchema } from "../../validations/userSchemas";
 import { useAuth } from "../../hooks/authHooks/authHooks";
 import { createSubmitHandlerWithToast } from "../../utils/formSubmitWithToast";
 
-const UpdateProfileForm = () => {
+export const UpdateProfileForm = () => {
   const { user, updateProfileImage, isLoading } = useAuth(); // Using updateProfileImage as the general update hook for now
 
-  const form = useForm({
+  const method = useForm({
     resolver: yupResolver(updateProfileSchema),
     defaultValues: {
       name: user?.name || "",
       email: user?.email || "",
       phone: user?.phone || "",
-      image: null, 
+      image: user?.image || null, 
     },
     mode: "onChange",
   });
 
   const onSubmit = async (data) => {
     try {
-      // Create FormData to handle both text fields and file upload
+      const{name,email,phone}=data;
       const formData = new FormData();
-      formData.append("name", data.name);
-      formData.append("email", data.email);
-      formData.append("phone", data.phone);
+      formData.append("name", name);
+      formData.append("email", email);
+      formData.append("phone", phone);
 
       // Handle Image Logic
-      if (data.image instanceof File) {
-        formData.append("image", data.image);
+      if (image instanceof File) {
+        // New file selected
+        formData.append("image", image);
       } else if (data.image === null && user.image) {
+        // Image explicitly removed (data.image set to null by FormFileInput)
+        // Send empty string to indicate removal to backend
+        formData.append("image", "");
       }
       
-      
       await updateProfileImage(formData);
-      
-    
     } catch (error) {
       console.error("Update failed", error);
     }
   };
 
-  const handleSubmit = createSubmitHandlerWithToast(form, onSubmit);
+  const handleSubmit = createSubmitHandlerWithToast(method, onSubmit);
 
   return (
-    <Form {...form}>
+    <Form {...method}>
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Profile Image Upload */}
         {/* Profile Image Upload - Centered */}
@@ -67,14 +68,14 @@ const UpdateProfileForm = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
-            control={form.control}
+            control={method.control}
             name="name"
             label="Full Name"
             placeholder="John Doe"
             disabled={isLoading}
           />
           <FormField
-            control={form.control}
+            control={method.control}
             name="phone"
             label="Phone Number"
             placeholder="+1234567890"
@@ -83,7 +84,7 @@ const UpdateProfileForm = () => {
         </div>
 
         <FormField
-          control={form.control}
+          control={method.control}
           name="email"
           type="email"
           label="Email Address"
@@ -92,17 +93,24 @@ const UpdateProfileForm = () => {
         />
 
         <div className="flex justify-end pt-4">
-             <Button
-              type="submit"
-              className="w-full md:w-auto min-w-[140px] h-11 font-semibold text-base bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg transition-all"
-              disabled={isLoading || !form.formState.isDirty}
-            >
-              {isLoading ? "Saving Changes..." : "Save Changes"}
-            </Button>
+            <Button
+               type="submit"
+               className="w-full md:w-auto min-w-[140px] h-11 font-semibold text-base bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg transition-all"
+               disabled={isLoading || !method.formState.isDirty}
+             >
+               {isLoading ? (
+                 <>
+                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                   Saving Changes...
+                 </>
+               ) : (
+                 "Save Changes"
+               )}
+             </Button>
         </div>
       </form>
     </Form>
   );
 };
 
-export default UpdateProfileForm;
+

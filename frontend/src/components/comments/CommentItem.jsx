@@ -1,18 +1,16 @@
-
-import { memo, useState, useCallback, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect } from "react";
 import { formatDistanceToNow } from "date-fns";
-import { MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import CommentForm from "./CommentForm";
-import CommentActionsMenu from "./CommentActionsMenu";
-import DeleteCommentDialog from "./DeleteCommentDialog";
+import { CommentForm } from "./CommentForm";
+import { CommentActionsMenu } from "./CommentActionsMenu";
+import { DeleteCommentDialog } from "./DeleteCommentDialog";
 import { useAuth } from "../../hooks/authHooks/authHooks";
-import { formatPostDate, getAuthorInfo } from "../../utils/postUtils";
-import AuthorAvatar from "../common/AuthorAvatar";
+import { getAuthorInfo } from "../../utils/postUtils";
+import { AuthorAvatar } from "../common/AuthorAvatar";
 import { useUpdateComment } from "../../hooks/commentHooks/commentMutations";
-import { createCommentComparison } from "../../utils/memoComparisons";
 
-const CommentItem = memo(({ comment, postId, onReplySuccess }) => {
+export const CommentItem = ({ comment, postId, onReplySuccess }) => {
   const { isAuthenticated, user } = useAuth();
   const [showReplies, setShowReplies] = useState(false);
   const [showReplyForm, setShowReplyForm] = useState(false);
@@ -26,83 +24,73 @@ const CommentItem = memo(({ comment, postId, onReplySuccess }) => {
     commentRef.current = comment;
   }, [comment]);
 
-
   const {
     author,
     createdAt,
     body,
     id,
+    parentId,
     replies: commentReplies = [],
   } = comment || {};
 
-  
   const { name: authorName } = getAuthorInfo(author);
   const hasReplies = commentReplies.length > 0;
   const isCommentAuthor = user?.id === author?.id;
-  
 
-
-  const timeAgo = useMemo(() => {
-    if (!createdAt) return "";
-    return formatDistanceToNow(new Date(createdAt), { addSuffix: true });
-  }, [createdAt]);
+  const timeAgo = createdAt 
+    ? formatDistanceToNow(new Date(createdAt), { addSuffix: true })
+    : "";
 
   // React Query mutation for updating comment
   const updateCommentMutation = useUpdateComment();
 
-  // useCallback avoids re-creating function on each render
-  const toggleReplies = useCallback(() => {
+  const toggleReplies = () => {
     setShowReplies((prev) => !prev);
-  }, []);
+  };
 
-  const toggleReplyForm = useCallback(() => {
+  const toggleReplyForm = () => {
     setShowReplyForm((prev) => !prev);
-  }, []);
+  };
 
-  const handleReplySuccess = useCallback(() => {
+  const handleReplySuccess = () => {
     setShowReplyForm(false);
     setShowReplies(true); // Show replies after successful reply
     if (onReplySuccess) {
       onReplySuccess();
     }
-  }, [onReplySuccess]);
+  };
 
-  const handleEdit = useCallback(() => {
+  const handleEdit = () => {
     setIsEditing(true);
-  }, []);
+  };
 
-  const handleCancelEdit = useCallback(() => {
+  const handleCancelEdit = () => {
     setIsEditing(false);
-  }, []);
+  };
 
-  const handleUpdate = useCallback(
-    async (updatedBody) => {
-      if (!id) return;
+  const handleUpdate = async (updatedBody) => {
+    if (!id) return;
 
-      try {
-        await updateCommentMutation.mutateAsync({
-          commentId: id,
-          body: updatedBody,
-        });
-        setIsEditing(false);
-        // Call onReplySuccess to refresh comments if provided
-        if (onReplySuccess) {
-          onReplySuccess();
-        }
-      } catch (error) {
-
-        throw error;
+    try {
+      await updateCommentMutation.mutateAsync({
+        commentId: id,
+        body: updatedBody,
+      });
+      setIsEditing(false);
+      // Call onReplySuccess to refresh comments if provided
+      if (onReplySuccess) {
+        onReplySuccess();
       }
-    },
-    [id, updateCommentMutation, onReplySuccess]
-  );
+    } catch (error) {
+      throw error;
+    }
+  };
 
-
-  const handleDelete = useCallback(() => {
+  const handleDelete = () => {
     if (deleteDialogRef.current && commentRef.current) {
       deleteDialogRef.current.openDialog(commentRef.current);
     }
-  }, []); // Empty deps - commentRef is stable, deleteDialogRef is stable
+  };
 
   const isPending = updateCommentMutation.isPending;
 
@@ -143,13 +131,13 @@ const CommentItem = memo(({ comment, postId, onReplySuccess }) => {
               />
             </div>
           ) : (
-            <p className="text-gray-700 text-sm whitespace-pre-wrap break-words">
+            <p className="text-gray-700 text-sm whitespace-pre-wrap break-all">
               {body}
             </p>
           )}
 
-          {/* Reply Button - Only show when not editing */}
-          {isAuthenticated && !isEditing && (
+          {/* Reply Button - Only show for top-level comments and when not editing */}
+          {isAuthenticated && !isEditing && !parentId && (
             <div className="mt-2">
               <Button
                 type="button"
@@ -158,7 +146,6 @@ const CommentItem = memo(({ comment, postId, onReplySuccess }) => {
                 onClick={toggleReplyForm}
                 className="h-7 text-xs"
               >
-                <MessageSquare className="h-3 w-3 mr-1" />
                 Reply
               </Button>
             </div>
@@ -220,6 +207,4 @@ const CommentItem = memo(({ comment, postId, onReplySuccess }) => {
       <DeleteCommentDialog ref={deleteDialogRef} />
     </div>
   );
-}, createCommentComparison());
-
-export default CommentItem;
+};

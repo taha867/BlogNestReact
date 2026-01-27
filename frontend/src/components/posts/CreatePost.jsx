@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import CreatePostForm from "./form/CreatePostForm.jsx";
+import {CreatePostForm} from "./form/CreatePostForm.jsx";
 
-const CreatePost = () => {
+export const CreatePost = () => {
   const navigate = useNavigate();
 
   const handlePostCreated = () => {
@@ -23,4 +23,3 @@ const CreatePost = () => {
   );
 };
 
-export default CreatePost;

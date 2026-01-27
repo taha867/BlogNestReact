@@ -1,7 +1,5 @@
-import DashboardContainer from "../containers/DashboardContainer.jsx";
+import { DashboardContainer } from "../containers/DashboardContainer.jsx";
 
-const DashboardPage = () => {
+export const DashboardPage = () => {
   return <DashboardContainer />;
 };
-
-export default DashboardPage;

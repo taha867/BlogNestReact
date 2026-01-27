@@ -1,15 +1,15 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { CardContent } from "@/components/ui/card";
 import { useUserPosts } from "../../hooks/postHooks/postQueries";
 import { calculateTotalPages } from "../../services/postService";
 import { POSTS_PER_PAGE } from "../../utils/constants";
-import PostCard from "../common/PostCard.jsx";
-import PaginationControls from "../common/PaginationControls.jsx";
+import {PostCard} from "../common/PostCard.jsx";
+import {PaginationControls} from "../common/PaginationControls.jsx";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { POST_STATUS } from "../../utils/constants";
 
-const PostList = ({ onEditPost, onDeletePost }) => {
+export const PostList = ({ onEditPost, onDeletePost }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState(POST_STATUS.PUBLISHED);
   const [searchParams] = useSearchParams();
@@ -33,23 +33,17 @@ const PostList = ({ onEditPost, onDeletePost }) => {
     pagination.limit || POSTS_PER_PAGE
   );
 
-  const handleDeleteClick = useCallback(
-    (post) => {
-      onDeletePost(post);
-    },
-    [onDeletePost]
-  );
+  const handleDeleteClick = (post) => {
+    onDeletePost(post);
+  };
 
-  const handleEditClick = useCallback(
-    (post) => {
-      onEditPost(post);
-    },
-    [onEditPost]
-  );
+  const handleEditClick = (post) => {
+    onEditPost(post);
+  };
 
-  const handlePageChange = useCallback((newPage) => {
+  const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
-  }, []);
+  };
 
   // Reset to first page when search query changes
   useEffect(() => {
@@ -67,17 +61,17 @@ const PostList = ({ onEditPost, onDeletePost }) => {
   return (
     <div className="flex flex-col min-h-[calc(100vh-18rem)]">
       <Tabs value={status} onValueChange={handleTabChange} className="w-full">
-        <div className="flex items-center justify-between mb-8">
-          <TabsList className="w-full max-w-md mx-auto grid grid-cols-2 bg-zinc-100 p-1 rounded-xl h-auto">
+        <div className="flex items-center justify-start mb-8">
+          <TabsList className="grid w-full grid-cols-2 lg:w-[400px] bg-zinc-100 p-1 rounded-xl h-11 shrink-0">
             <TabsTrigger 
               value={POST_STATUS.PUBLISHED}
-              className="rounded-lg py-2.5 text-sm font-semibold transition-all data-[state=active]:bg-black data-[state=active]:text-white data-[state=active]:shadow-lg"
+              className="w-full h-full rounded-lg px-0 text-sm font-semibold transition-colors data-[state=active]:bg-black data-[state=active]:text-white data-[state=active]:shadow-none active:scale-100"
             >
               Published
             </TabsTrigger>
             <TabsTrigger 
               value={POST_STATUS.DRAFT}
-              className="rounded-lg py-2.5 text-sm font-semibold transition-all data-[state=active]:bg-black data-[state=active]:text-white data-[state=active]:shadow-lg"
+              className="w-full h-full rounded-lg px-0 text-sm font-semibold transition-colors data-[state=active]:bg-black data-[state=active]:text-white data-[state=active]:shadow-none active:scale-100"
             >
               Drafts
             </TabsTrigger>
@@ -125,4 +119,3 @@ const PostList = ({ onEditPost, onDeletePost }) => {
   );
 };
 
-export default PostList;

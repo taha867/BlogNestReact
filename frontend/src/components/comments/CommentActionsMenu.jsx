@@ -1,9 +1,8 @@
-
-import { memo, useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import { MoreVertical, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const CommentActionsMenu = memo(({ onEdit, onDelete, disabled = false }) => {
+export const CommentActionsMenu = ({ onEdit, onDelete, disabled = false }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -29,26 +28,26 @@ const CommentActionsMenu = memo(({ onEdit, onDelete, disabled = false }) => {
       }
     };
     document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
+    return () => document.addEventListener("keydown", handleEscape);
   }, [isMenuOpen]);
 
-  const toggleMenu = useCallback(() => {
+  const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
-  }, []);
+  };
 
-  const handleEdit = useCallback(() => {
+  const handleEdit = () => {
     setIsMenuOpen(false);
     if (onEdit) {
       onEdit();
     }
-  }, [onEdit]);
+  };
 
-  const handleDelete = useCallback(() => {
+  const handleDelete = () => {
     setIsMenuOpen(false);
     if (onDelete) {
       onDelete();
     }
-  }, [onDelete]);
+  };
 
   return (
     <div className="relative" ref={menuRef}>
@@ -90,8 +89,6 @@ const CommentActionsMenu = memo(({ onEdit, onDelete, disabled = false }) => {
       )}
     </div>
   );
-});
+};
 
-
-export default CommentActionsMenu;
 

@@ -1,9 +1,9 @@
 import { forwardRef } from "react";
-import DeleteDialog from "../common/DeleteDialog";
+import {DeleteDialog} from "../common/DeleteDialog";
 import { useDeletePost } from "../../hooks/postHooks/postMutations";
 import { POST_STATUS } from "../../utils/constants";
 
-const DeletePostDialog = forwardRef((props, ref) => {
+export const DeletePostDialog = forwardRef((props, ref) => {
   return (
     <DeleteDialog
       ref={ref}
@@ -31,7 +31,3 @@ const DeletePostDialog = forwardRef((props, ref) => {
     />
   );
 });
-
-
-
-export default DeletePostDialog;

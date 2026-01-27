@@ -1,7 +1,5 @@
-import PostContainer from "../containers/PostContainer";
+import { PostContainer } from "../containers/PostContainer";
 
-const PostDetailPage = () => {
+export const PostDetailPage = () => {
   return <PostContainer />;
 };
-
-export default PostDetailPage;

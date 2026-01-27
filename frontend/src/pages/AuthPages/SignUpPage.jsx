@@ -1,7 +1,5 @@
-import SignUp from "../../components/auth/SignUp.jsx";
+import { SignUp } from "../../components/auth/SignUp.jsx";
 
-const SignUpPage = () => {
+export const SignUpPage = () => {
   return <SignUp />;
 };
-
-export default SignUpPage;

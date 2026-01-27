@@ -1,11 +1,7 @@
-import { useSearchParams } from "react-router-dom";
-import ResetPasswordForm from "./form/ResetPasswordForm.jsx";
-import AuthLayout from "./AuthLayout";
+import { ResetPasswordForm } from "./form/ResetPasswordForm.jsx";
+import { AuthLayout } from "./AuthLayout";
 
-const ResetPassword = () => {
-  const [searchParams] = useSearchParams();
-  const token = searchParams.get("token");
-
+export const ResetPassword = () => {
   return (
     <AuthLayout
       title="Set new password"
@@ -17,5 +13,3 @@ const ResetPassword = () => {
     </AuthLayout>
   );
 };
-
-export default ResetPassword;

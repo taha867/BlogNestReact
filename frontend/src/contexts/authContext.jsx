@@ -1,4 +1,4 @@
-import { createContext, useReducer, useContext, useMemo, use, useEffect } from "react";
+import { createContext, useReducer, useContext, use, useEffect } from "react";
 import { authReducer, initialAuthState } from "../reducers/authReducer";
 import { createInitialAuthPromise } from "../utils/authPromise";
 
@@ -28,14 +28,10 @@ export const AuthProvider = ({ children }) => {
   }, [state.isInitializing]);
 
 
-  // Only re-creates when state or dispatch changes
-  const contextValue = useMemo(
-    () => ({
-      state,
-      dispatch,
-    }),
-    [state, dispatch]
-  );
+  const contextValue = {
+    state,
+    dispatch,
+  };
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

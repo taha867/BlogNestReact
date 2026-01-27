@@ -1,4 +1,4 @@
-import { memo, useMemo, useState, useCallback } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ImageIcon, Eye, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,10 +8,15 @@ import {
   getPostImageUrl,
   getAuthorInfo,
 } from "../../utils/postUtils";
-import { createPostComparison } from "../../utils/memoComparisons";
-import AuthorAvatar from "./AuthorAvatar";
+import {AuthorAvatar} from "./AuthorAvatar";
 
-const PostCard = ({ post, variant = "public", onView, onEdit, onDelete }) => {
+export const PostCard = ({
+  post,
+  variant = "public",
+  onView,
+  onEdit,
+  onDelete,
+}) => {
   const navigate = useNavigate();
   // Track if image failed to load to prevent infinite retries
   const [imageError, setImageError] = useState(false);
@@ -19,33 +24,28 @@ const PostCard = ({ post, variant = "public", onView, onEdit, onDelete }) => {
 
   const isDashboard = variant === "dashboard";
 
-
   const { author, createdAt, body, image, title, id } = post || {};
 
-  
-  const handlePostClick = useCallback(
-    (e) => {
-      // Don't navigate if clicking on action buttons or their children
-      const clickedButton = e.target.closest("button");
-      if (clickedButton) {
-        return;
-      }
-      if (id) {
-        navigate(`/posts/${id}`);
-      }
-    },
-    [navigate, id]
-  );
-  
-  const { name: authorName } = getAuthorInfo(author);
-  const formattedDate = useMemo(() => formatPostDate(createdAt), [createdAt]);
-  const readTime = useMemo(() => calculateReadTime(body), [body]);
+  const handlePostClick = (e) => {
+    // Don't navigate if clicking on action buttons or their children
+    const clickedButton = e.target.closest("button");
+    if (clickedButton) {
+      return;
+    }
+    if (id) {
+      navigate(`/posts/${id}`);
+    }
+  };
 
-  const excerpt = useMemo(() => {
+  const { name: authorName } = getAuthorInfo(author);
+  const formattedDate = formatPostDate(createdAt);
+  const readTime = calculateReadTime(body);
+
+  const excerpt = (() => {
     if (!body) return "";
     // Show first 120 characters for excerpt
     return body.length > 120 ? `${body.slice(0, 120)}...` : body;
-  }, [body]);
+  })();
 
   const imageUrl = getPostImageUrl(image);
 
@@ -125,7 +125,7 @@ const PostCard = ({ post, variant = "public", onView, onEdit, onDelete }) => {
                         e.stopPropagation();
                         onView(post);
                       }}
-                       className="h-7 w-7"
+                      className="h-7 w-7"
                     >
                       <Eye className="h-4 w-4" />
                     </Button>
@@ -163,7 +163,7 @@ const PostCard = ({ post, variant = "public", onView, onEdit, onDelete }) => {
             )}
 
             {/* Title */}
-            <h2 className="text-2xl font-bold text-gray-900 mb-3 line-clamp-2 hover:text-blue-600 transition-colors">
+            <h2 className="text-2xl font-bold text-gray-900 mb-3 line-clamp-2 hover:text-blue-600 transition-colors break-all">
               {title}
             </h2>
 
@@ -186,12 +186,12 @@ const PostCard = ({ post, variant = "public", onView, onEdit, onDelete }) => {
             </div>
 
             {/* Description/Excerpt */}
-            <p className="text-gray-600 text-sm line-clamp-2">{excerpt}</p>
+            <p className="text-gray-600 text-sm line-clamp-2 break-all">
+              {excerpt}
+            </p>
           </div>
         </div>
       </div>
     </div>
   );
 };
-
-export default memo(PostCard, createPostComparison());

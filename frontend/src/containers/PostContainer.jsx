@@ -1,10 +1,10 @@
 
 import { useParams } from "react-router-dom";
-import PostDetailContent from "../components/posts/PostDetailContent";
-import CommentSection from "../components/comments/CommentSection";
+import {PostDetailContent} from "../components/posts/PostDetailContent";
+import {CommentSection} from "../components/comments/CommentSection";
 import { postIdParamSchema } from "../validations/postSchemas";
 
-const PostContainer = () => {
+export const PostContainer = () => {
   const { id } = useParams();
 
     let postId;
@@ -36,5 +36,4 @@ const PostContainer = () => {
   );
 };
 
-export default PostContainer;
 

@@ -1,21 +1,21 @@
 import {
-  memo,
   useState,
   useRef,
   useEffect,
-  useCallback,
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut, User } from "lucide-react";
 import { useAuth } from "../../hooks/authHooks/authHooks";
 import { getImageUrl } from "../../utils/imageUtils";
 import { getUserInitials } from "../../utils/authorUtils";
+import {LogoutDialog} from "./LogoutDialog";
 
-const UserProfileMenu = memo(() => {
-  const { user, signout } = useAuth();
+export const UserProfileMenu = () => {
+  const { user, signout, isLoading } = useAuth();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  const logoutDialogRef = useRef(null);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -32,20 +32,21 @@ const UserProfileMenu = memo(() => {
     }
   }, [isMenuOpen]);
 
-  const handleSignout = useCallback(async () => {
-    try {
-      await signout();
-      setIsMenuOpen(false);
-      navigate("/signin");
-    } catch (error) {
-      setIsMenuOpen(false);
-    }
-  }, [signout, navigate]);
+  const handleSignoutClick = () => {
+    setIsMenuOpen(false);
+    logoutDialogRef.current?.open();
+  };
 
-  const handleProfile = useCallback(() => {
+  const handleConfirmSignout = async () => {
+      await signout();
+      logoutDialogRef.current?.close();
+      navigate("/signin");
+  };
+
+  const handleProfile = () => {
     setIsMenuOpen(false);
     navigate("/profile");
-  }, [navigate]);
+  };
 
   if (!user) return null;
 
@@ -97,7 +98,7 @@ const UserProfileMenu = memo(() => {
             <div className="border-t border-slate-100 my-1"></div>
             <button
               type="button"
-              onClick={handleSignout}
+              onClick={handleSignoutClick}
               className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
             >
               <LogOut className="h-4 w-4" />
@@ -106,8 +107,12 @@ const UserProfileMenu = memo(() => {
           </div>
         )}
       </div>
+
+      <LogoutDialog 
+        ref={logoutDialogRef} 
+        onConfirm={handleConfirmSignout}
+        isLoading={isLoading} 
+      />
     </>
   );
-});
-
-export default UserProfileMenu;
+};

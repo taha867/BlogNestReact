@@ -2,13 +2,13 @@ import { StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
-import App from "./App.jsx";
+import { App } from "./App.jsx";
 import { AuthProvider } from "./contexts/authContext.jsx";
-import AppInitializer from "./components/common/AppInitializer.jsx";
+import { AppInitializer } from "./components/common/AppInitializer.jsx";
 import { ErrorBoundary } from "react-error-boundary";
 import { AuthFallback } from "./components/common/AuthFallback.jsx";
 
-//queries : read, mutation : write 
+//queries : read, mutation : write
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

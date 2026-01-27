@@ -3,16 +3,17 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { Loader2 } from "lucide-react";
 import { FormField } from "../../custom";
 import { changePasswordSchema } from "../../../validations/userSchemas";
 import { useAuth } from "../../../hooks/authHooks/authHooks";
 import { createSubmitHandlerWithToast } from "../../../utils/formSubmitWithToast";
 
-const ChangePasswordForm = () => {
-  const { user, changePassword, isLoading } = useAuth();
+export const ChangePasswordForm = () => {
+  const { changePassword, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  const form = useForm({
+  const method = useForm({
     resolver: yupResolver(changePasswordSchema),
     defaultValues: {
       newPassword: "",
@@ -22,22 +23,20 @@ const ChangePasswordForm = () => {
   });
 
   const onSubmit = async (data) => {
-    try {
-      await changePassword(data.newPassword);
-        setTimeout(() => {
-        navigate("/dashboard");
-      }, 1500);
-    } catch (error) {
-          }
+    const { newPassword } = data;
+    await changePassword(newPassword);
+    setTimeout(() => {
+      navigate("/dashboard");
+    }, 1500);
   };
 
-  const handleSubmit = createSubmitHandlerWithToast(form, onSubmit);
+  const handleSubmit = createSubmitHandlerWithToast(method, onSubmit);
 
   return (
-    <Form {...form}>
+    <Form {...method}>
       <form onSubmit={handleSubmit} className="space-y-3">
         <FormField
-          control={form.control}
+          control={method.control}
           name="newPassword"
           type="password"
           label="Type new password"
@@ -48,7 +47,7 @@ const ChangePasswordForm = () => {
         />
 
         <FormField
-          control={form.control}
+          control={method.control}
           name="confirmPassword"
           type="password"
           label="Type new password again"
@@ -61,14 +60,19 @@ const ChangePasswordForm = () => {
         <Button
           type="submit"
           className="w-full h-11 font-medium bg-green-600 hover:bg-green-700 text-white shadow-sm hover:shadow-md transition-all mt-4"
-          disabled={isLoading}
+          disabled={isLoading || !method.formState.isDirty}
         >
-          {isLoading ? "Saving..." : "Save Changes"}
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Saving...
+            </>
+          ) : (
+            "Save Changes"
+          )}
         </Button>
       </form>
     </Form>
   );
 };
-
-export default ChangePasswordForm;
 

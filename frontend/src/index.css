@@ -38,6 +38,27 @@ body {
   color: hsl(var(--foreground));
 }
 
+/* Global button and link styles */
+button, 
+a, 
+[role="button"],
+.btn {
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+a:hover, 
+button:not(:disabled):not([data-state]):hover,
+[role="button"]:not(:disabled):not([data-state]):hover {
+  transform: translateY(-1px);
+}
+
+button:not([data-state]):active,
+a:active,
+[role="button"]:not([data-state]):active {
+  transform: translateY(0) scale(0.98);
+}
+
 /* Mobile menu slide-in animation */
 @keyframes slideInLeft {
   from {

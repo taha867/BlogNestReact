@@ -4,10 +4,10 @@ import { Separator } from "@/components/ui/separator";
 import { Github } from "lucide-react";
 import toast from "react-hot-toast";
 import { TOAST_MESSAGES } from "../../utils/constants";
-import SignUpForm from "./form/SignUpForm.jsx";
-import AuthLayout from "./AuthLayout";
+import {SignUpForm} from "./form/SignUpForm.jsx";
+import {AuthLayout} from "./AuthLayout";
 
-const SignUp = () => {
+export const SignUp = () => {
   return (
     <AuthLayout
       title="Create an account"
@@ -60,4 +60,3 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;

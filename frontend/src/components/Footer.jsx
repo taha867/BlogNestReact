@@ -1,7 +1,7 @@
 import { Github, Instagram, Twitter, Linkedin } from "lucide-react";
 import { SOCIAL_LINKS } from "../utils/constants";
 
-const Footer = () => {
+export const Footer = () => {
   const iconMap = {
     GitHub: Github,
     Instagram: Instagram,
@@ -43,5 +43,3 @@ const Footer = () => {
     </footer>
   );
 };
-
-export default Footer;

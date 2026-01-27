@@ -1,7 +1,5 @@
-import ProfileContainer from "../containers/ProfileContainer";
+import { ProfileContainer } from "../containers/ProfileContainer";
 
-const ProfilePage = () => {
+export const ProfilePage = () => {
   return <ProfileContainer />;
 };
-
-export default ProfilePage;
