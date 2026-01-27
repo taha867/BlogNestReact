@@ -1,8 +1,4 @@
-/**
- * CommentActionsMenu - Dropdown menu for comment actions (Edit/Delete)
- * Reusable component following UserProfileMenu pattern
- * Only visible to comment author
- */
+
 import { memo, useState, useRef, useEffect, useCallback } from "react";
 import { MoreVertical, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";

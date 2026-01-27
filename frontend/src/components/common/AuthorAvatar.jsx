@@ -1,8 +1,4 @@
-/**
- * AuthorAvatar - Reusable component for displaying author avatars
- * Handles image display with fallback to initials placeholder
- * Supports click-to-preview for profile images
- */
+
 import { memo, useState, useCallback, useMemo } from "react";
 import { getImageUrl } from "../../utils/imageUtils";
 import { getAuthorInitial } from "../../utils/authorUtils";

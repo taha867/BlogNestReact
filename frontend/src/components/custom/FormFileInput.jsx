@@ -1,8 +1,4 @@
-/**
- * FormFileInput - File input component for image uploads
- * Handles file selection, preview, and validation
- * File is sent to backend via FormData (multipart/form-data)
- */
+
 import { useState, useRef, useCallback } from "react";
 import {
   FormControl,

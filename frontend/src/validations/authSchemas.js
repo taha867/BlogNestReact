@@ -21,9 +21,7 @@ const {
   CONFIRM_PASSWORD_REQUIRED,
 } = VALIDATION_MESSAGES;
 
-/**
- * Sign In Form Validation Schema
- */
+
 export const signinSchema = yup.object({
   email: baseEmailSchema.required(EMAIL_REQUIRED),
   password: basePasswordSchema
@@ -31,9 +29,7 @@ export const signinSchema = yup.object({
     .min(8, PASSWORD_TOO_SHORT),
 });
 
-/**
- * Sign Up Form Validation Schema
- */
+
 export const signupSchema = yup.object({
   name: baseNameSchema
     .required(NAME_REQUIRED)
@@ -50,16 +46,11 @@ export const signupSchema = yup.object({
   ),
 });
 
-/**
- * Forgot Password Form Validation Schema
- */
+
 export const forgotPasswordSchema = yup.object({
   email: baseEmailSchema.required(EMAIL_REQUIRED).max(254, EMAIL_TOO_LONG),
 });
 
-/**
- * Reset Password Form Validation Schema
- */
 export const resetPasswordSchema = yup.object({
   newPassword: basePasswordSchema
     .required(PASSWORD_REQUIRED)

@@ -28,7 +28,7 @@ const DeleteCommentDialog = forwardRef((props, ref) => {
         },
         mutationHook: useDeleteComment,
         mutationCall: (payload) => {
-          // Backend handles cascading delete for child comments
+          
           return payload.id;
         },
         payloadFormatter: (comment) => ({

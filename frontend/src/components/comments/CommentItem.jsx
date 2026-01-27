@@ -1,7 +1,4 @@
-/**
- * CommentItem - Component for displaying a single comment with nested replies
- * Supports edit and delete functionality for comment authors
- */
+
 import { memo, useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
@@ -21,7 +18,7 @@ const CommentItem = memo(({ comment, postId, onReplySuccess }) => {
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const deleteDialogRef = useRef(null);
-  // Use ref to store comment for handleDelete to avoid dependency on comment object
+
   const commentRef = useRef(comment);
 
   // Keep ref in sync with comment prop
@@ -29,7 +26,7 @@ const CommentItem = memo(({ comment, postId, onReplySuccess }) => {
     commentRef.current = comment;
   }, [comment]);
 
-  // Destructure with safe defaults - use undefined (not {}) so utility functions handle them correctly
+
   const {
     author,
     createdAt,
@@ -38,13 +35,13 @@ const CommentItem = memo(({ comment, postId, onReplySuccess }) => {
     replies: commentReplies = [],
   } = comment || {};
 
-  // Simple derived values - no need for memoization (overhead > benefit)
+  
   const { name: authorName } = getAuthorInfo(author);
   const hasReplies = commentReplies.length > 0;
   const isCommentAuthor = user?.id === author?.id;
-  const formattedDate = formatPostDate(createdAt);
+  
 
-  // Memoize timeAgo since it creates a new Date object - this is worth memoizing
+
   const timeAgo = useMemo(() => {
     if (!createdAt) return "";
     return formatDistanceToNow(new Date(createdAt), { addSuffix: true });
@@ -93,16 +90,14 @@ const CommentItem = memo(({ comment, postId, onReplySuccess }) => {
           onReplySuccess();
         }
       } catch (error) {
-        // Error handling is done by React Query and axios interceptor
-        // Re-throw to prevent form from closing on error
+
         throw error;
       }
     },
     [id, updateCommentMutation, onReplySuccess]
   );
 
-  // Use ref to access comment without making handleDelete depend on comment object
-  // This prevents CommentActionsMenu from re-rendering when comment object reference changes
+
   const handleDelete = useCallback(() => {
     if (deleteDialogRef.current && commentRef.current) {
       deleteDialogRef.current.openDialog(commentRef.current);

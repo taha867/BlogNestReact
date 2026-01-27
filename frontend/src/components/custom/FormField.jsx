@@ -1,8 +1,4 @@
-/**
- * FormField - Unified form field component for all input types
- * Handles text, email, password, tel, textarea inputs with smart type-based behavior
- * Replaces separate FormInput and FormTextarea components
- */
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {

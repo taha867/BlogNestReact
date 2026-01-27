@@ -35,9 +35,7 @@ export const useHomePosts = (page = 1, limit, search) => {
   });
 };
 
-/**
- * Hook for fetching user's posts (dashboard)
- */
+
 export const useUserPosts = (page = 1, limit, search, status) => {
   const { user: { id: userId } = {} } = useAuth();
 
@@ -63,9 +61,7 @@ export const useUserPosts = (page = 1, limit, search, status) => {
   });
 };
 
-/**
- * Hook for fetching a single post by ID
- */
+
 export const usePostDetail = (postId) => {
   return useQuery({
     queryKey: postDetailKeys.detail(postId),

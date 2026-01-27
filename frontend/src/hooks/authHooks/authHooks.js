@@ -9,10 +9,7 @@ import {
   useChangePassword,
 } from "./authMutations";
 
-/**
- * Custom hook for authentication operations
- * Wraps React Query mutations for easy use in components
- */
+
 export const useAuth = () => {
   const { state } = useAuthContext();
 

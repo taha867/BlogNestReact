@@ -1,9 +1,4 @@
 
-
-/**
- * Get user initials from name or email
- * Handles multi-word names (uses first and last initial) or single word names
- */
 export const getUserInitials = (user) => {
   if (user?.name) {
     const names = user.name.trim().split(/\s+/);

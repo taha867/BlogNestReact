@@ -22,7 +22,7 @@ const PostCard = ({ post, variant = "public", onView, onEdit, onDelete }) => {
 
   const { author, createdAt, body, image, title, id } = post || {};
 
-  // Handle post click - navigate to post detail page (only if not clicking on action buttons)
+  
   const handlePostClick = useCallback(
     (e) => {
       // Don't navigate if clicking on action buttons or their children
@@ -194,6 +194,4 @@ const PostCard = ({ post, variant = "public", onView, onEdit, onDelete }) => {
   );
 };
 
-// Memoize PostCard with custom comparison to prevent re-renders when parent re-renders
-// but post data hasn't changed (compares content, not just object references)
 export default memo(PostCard, createPostComparison());

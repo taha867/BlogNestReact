@@ -5,7 +5,6 @@ const CreatePost = () => {
   const navigate = useNavigate();
 
   const handlePostCreated = () => {
-    // Navigate back to dashboard after successful post creation
     navigate("/dashboard");
   };
 

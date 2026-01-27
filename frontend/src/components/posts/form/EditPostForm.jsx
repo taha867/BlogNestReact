@@ -88,9 +88,7 @@ const EditPostForm = forwardRef((_props, ref) => {
         formData.append("image", "");
       }
      
-      // React Query mutation handles API call and cache invalidation automatically
-      // Pass previousStatus so mutation can check if home posts need invalidation
-      await updatePostMutation.mutateAsync({
+            await updatePostMutation.mutateAsync({
         postId: currentPost.id,
         formData,
         previousStatus: currentPost.status,
@@ -102,7 +100,6 @@ const EditPostForm = forwardRef((_props, ref) => {
     }
   };
 
-  // Success message is shown automatically by axios interceptor from backend message
   const handleSubmit = createSubmitHandlerWithToast(form, onSubmit);
 
   const handleClose = () => {

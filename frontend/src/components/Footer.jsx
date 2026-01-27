@@ -2,7 +2,6 @@ import { Github, Instagram, Twitter, Linkedin } from "lucide-react";
 import { SOCIAL_LINKS } from "../utils/constants";
 
 const Footer = () => {
-  // Map icon names to Lucide components
   const iconMap = {
     GitHub: Github,
     Instagram: Instagram,

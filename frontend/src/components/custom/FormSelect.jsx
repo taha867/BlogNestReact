@@ -1,7 +1,4 @@
-/**
- * FormSelect - Custom select component for dropdown selections
- * Handles status selections, categories, and other dropdown options
- */
+
 import {
   FormControl,
   FormField,

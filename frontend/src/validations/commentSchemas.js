@@ -5,9 +5,7 @@ import { baseTextSchema } from "./commonSchemas";
 const { COMMENT_REQUIRED, COMMENT_TOO_SHORT, COMMENT_TOO_LONG } =
   VALIDATION_MESSAGES;
 
-/**
- * Comment Form Validation Schema
- */
+
 export const commentSchema = yup.object({
   body: baseTextSchema
     .required(COMMENT_REQUIRED)

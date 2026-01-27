@@ -1,7 +1,4 @@
-/**
- * ProtectedRoute component for authentication checks
- * Redirects to auth page if user is not authenticated
- */
+
 
 import { Navigate, useLocation, Outlet } from "react-router-dom";
 import { useAuth } from "../../hooks/authHooks/authHooks";

@@ -36,7 +36,7 @@ const ResetPasswordForm = ({ token }) => {
         navigate("/signin");
       }, 1500);
     } catch (error) {
-      // Error message is handled by axios interceptor
+    
     }
   };
 

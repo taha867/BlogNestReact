@@ -31,7 +31,7 @@ const CommentForm = ({
     mode: "onChange",
   });
 
-  // Extract stable form methods (react-hook-form provides stable references)
+  
   const { reset: formReset, handleSubmit: formHandleSubmit } = form;
 
   // Update form when initialValue changes (for edit mode)
@@ -40,18 +40,18 @@ const CommentForm = ({
     if (isEditMode && initialValue !== null) {
       formReset({ body: initialValue });
     }
-  }, [initialValue, formReset]); // Remove isEditMode dependency - it's derived from initialValue and onUpdate
+  }, [initialValue, formReset]);
 
   const onSubmit = useCallback(
     async (data) => {
-      // Edit mode: call onUpdate callback (isEditMode is derived from initialValue && onUpdate)
+      
       if (initialValue && onUpdate) {
         setIsSubmitting(true);
         try {
           await onUpdate(data.body);
-          // Don't reset form in edit mode - let parent handle state
+          
         } catch (error) {
-          // Error handling is done by the mutation in parent
+        
         } finally {
           setIsSubmitting(false);
         }
@@ -77,7 +77,7 @@ const CommentForm = ({
           onSuccess();
         }
       } catch (error) {
-        // Error handling is done by axios interceptor
+        
       } finally {
         setIsSubmitting(false);
       }
@@ -93,7 +93,7 @@ const CommentForm = ({
     ]
   );
 
-  // Simple derived values - no need for memoization (overhead > benefit for simple operations)
+  
   const isPending = isSubmitting || createCommentMutation.isPending;
   
   // Determine button text based on state
@@ -138,6 +138,5 @@ const CommentForm = ({
   );
 };
 
-// Memoize component to prevent unnecessary re-renders when parent re-renders
-// Only re-renders when props actually change
+
 export default memo(CommentForm);

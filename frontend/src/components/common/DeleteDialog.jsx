@@ -1,15 +1,4 @@
-/**
- * <DeleteDialog
- *   ref={dialogRef}
- *   config={{
- *     title: "Delete Post",
- *     descriptionFormatter: (payload) => `Delete "${payload.title}"?`,
- *     mutationHook: useDeletePost,
- *     mutationCall: (payload) => ({ postId: payload.id }),
- *     payloadFormatter: (entity) => ({ id: entity.id, title: entity.title }),
- *   }}
- * />
- */
+
 import { forwardRef, useImperativeHandle } from "react";
 import {
   AlertDialog,

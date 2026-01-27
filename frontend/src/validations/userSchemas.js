@@ -24,10 +24,7 @@ export const profileImageSchema = yup.object({
   image: imageFileSchema,
 });
 
-/**
- * Change Password Validation Schema
- * For authenticated users changing their password
- */
+
 export const changePasswordSchema = yup.object({
   newPassword: basePasswordSchema
     .required(PASSWORD_REQUIRED)
@@ -38,10 +35,7 @@ export const changePasswordSchema = yup.object({
   ),
 });
 
-/**
- * Update Profile Validation Schema
- * Validates name, phone, email, and optional image
- */
+
 export const updateProfileSchema = yup.object({
   name: baseNameSchema.required(VALIDATION_MESSAGES.NAME_REQUIRED).min(2, VALIDATION_MESSAGES.NAME_TOO_SHORT).max(50, VALIDATION_MESSAGES.NAME_TOO_LONG),
   phone: basePhoneSchema.required(VALIDATION_MESSAGES.PHONE_REQUIRED),

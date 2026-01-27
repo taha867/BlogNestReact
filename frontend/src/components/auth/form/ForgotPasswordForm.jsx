@@ -22,16 +22,12 @@ const ForgotPasswordForm = () => {
       await requestPasswordReset({ email: data.email });
       form.reset();
     } catch (error) {
-      // Error message is handled by axios interceptor
+     
     }
   };
 
   const handleSubmit = createSubmitHandlerWithToast(form, onSubmit);
 
-  const onBackToSignIn = () => {
-    // This function was referenced but not defined - adding placeholder
-    // You may need to implement navigation logic here
-  };
 
   return (
     <Form {...form}>

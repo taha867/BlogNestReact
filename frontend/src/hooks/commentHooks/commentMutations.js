@@ -7,10 +7,7 @@ import {
 } from "../../services/commentService";
 import { postCommentsKeys } from "./commentQueries";
 
-/**
- * Hook for creating a new comment or reply
- * Automatically invalidates post comments for the affected post
- */
+
 export const useCreateComment = () => {
   const queryClient = useQueryClient();
 
@@ -34,16 +31,13 @@ export const useCreateComment = () => {
             );
           },
         });
-        // Post detail doesn't display comment count, so no need to invalidate it
+        
       }
     },
   });
 };
 
-/**
- * Hook for updating an existing comment
- * Automatically invalidates post comments for the affected post
- */
+
 export const useUpdateComment = () => {
   const queryClient = useQueryClient();
 
@@ -66,17 +60,13 @@ export const useUpdateComment = () => {
             );
           },
         });
-        // Post detail doesn't display comment count, so no need to invalidate it
+        
       }
     },
   });
 };
 
-/**
- * Hook for deleting a comment
- * Automatically invalidates all post comments (since postId is unknown)
- * Note: Backend handles cascading delete for child comments
- */
+
 export const useDeleteComment = () => {
   const queryClient = useQueryClient();
 
@@ -90,8 +80,7 @@ export const useDeleteComment = () => {
       queryClient.invalidateQueries({
         queryKey: postCommentsKeys.lists(),
       });
-      // Post detail doesn't display comment count, so no need to invalidate it
-    },
+          },
   });
 };
 

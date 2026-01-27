@@ -1,6 +1,4 @@
-/**
- * Post Mutations - React Query hooks for post-related mutations
- */
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPost, updatePost, deletePost } from "../../services/postService";
 import { homePostsKeys, userPostsKeys, postDetailKeys } from "../../utils/queryKeys";

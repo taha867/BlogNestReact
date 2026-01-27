@@ -13,9 +13,7 @@ export const postCommentsKeys = {
   ],
 };
 
-/**
- * Hook for fetching comments for a specific post with infinite scrolling/load more support
- */
+
 export const usePostComments = (postId, limit = COMMENTS_PER_PAGE) => {
   return useInfiniteQuery({ //STORES DATA AS ARRAY OF PAGES
     queryKey: postCommentsKeys.list(postId, "infinite", limit),
