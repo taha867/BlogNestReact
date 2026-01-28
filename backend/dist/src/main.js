@@ -36,45 +36,59 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.createApp = createApp;
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
 const common_1 = require("@nestjs/common");
 const httpException_filter_1 = require("./common/filters/httpException.filter");
+const platform_express_1 = require("@nestjs/platform-express");
 const helmet_1 = __importDefault(require("helmet"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const express_1 = __importDefault(require("express"));
 const constants_1 = require("./lib/constants");
 const config_1 = __importDefault(require("./config/config"));
-async function bootstrap() {
-    const app = await core_1.NestFactory.create(app_module_1.AppModule);
+const server = (0, express_1.default)();
+async function createApp() {
+    const app = await core_1.NestFactory.create(app_module_1.AppModule, new platform_express_1.ExpressAdapter(server));
     const config = (0, config_1.default)();
-    app.use((0, helmet_1.default)()); //Protects against: XSS(Cross-Site Scripting), Clickjacking(UI Redress Attack), MIME sniffing
+    app.use((0, helmet_1.default)());
     app.use((0, cookie_parser_1.default)());
-    // CORS configuration
+    // CORS
     app.enableCors({
         origin: config.frontendUrl,
         credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
     });
-    // Global validation pipe
+    // Global validation
     app.useGlobalPipes(new common_1.ValidationPipe({
-        whitelist: true, // Strip away properties that do not have any decorators
-        forbidNonWhitelisted: true, // Throw an error if non-whitelisted properties are present
-        transform: true, // Automatically transform payloads to DTO instances
-        validateCustomDecorators: true, // Validate custom decorators
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+        validateCustomDecorators: true,
         transformOptions: {
-            enableImplicitConversion: true, // Automatically converts string query/body parameters to their expected types.
+            enableImplicitConversion: true,
         },
     }));
-    // Global exception filter(Error handling Layer)
+    // Global exception filter
     app.useGlobalFilters(new httpException_filter_1.AppExceptionFilter());
-    // Trust proxy (if behind load balancer/reverse proxy)
-    //app.set('trust proxy', true);
-    const port = config.port;
-    await app.listen(port);
-    console.log(`${constants_1.LOG_MESSAGES.APP_RUNNING} ${await app.getUrl()}`);
+    await app.init();
+    return { app, config };
 }
-bootstrap();
+// Logic to run locally vs Vercel
+if (process.env.NODE_ENV !== "production") {
+    createApp().then(async ({ app, config }) => {
+        const port = config.port || 3000;
+        await app.listen(port);
+        console.log(`${constants_1.LOG_MESSAGES.APP_RUNNING} on port ${port}`);
+    });
+}
+else {
+    // On Vercel, we just need to ensure the app is initialized
+    // Vercel handles the incoming requests via the exported 'server'
+    createApp();
+}
+exports.default = server;
 //# sourceMappingURL=main.js.map

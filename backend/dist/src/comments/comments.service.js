@@ -40,10 +40,15 @@ let CommentsService = class CommentsService {
                 select: {
                     id: true,
                     postId: true,
+                    parentId: true, // Need this for nesting validation
                 },
             });
             if (!parentComment) {
                 throw new common_1.NotFoundException(PARENT_COMMENT_NOT_FOUND);
+            }
+            // Restrict nesting to 2 levels: parent of a reply must be a top-level comment (parentId: null)
+            if (parentComment.parentId !== null) {
+                throw new common_1.BadRequestException(constants_1.ERROR_MESSAGES.NESTED_COMMENTS_LIMIT_REACHED);
             }
             finalPostId = parentComment.postId;
         }

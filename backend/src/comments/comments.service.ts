@@ -49,6 +49,7 @@ export class CommentsService {
         select: {
           id: true,
           postId: true,
+          parentId: true, // Need this for nesting validation
         },
       });
 

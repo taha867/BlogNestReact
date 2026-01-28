@@ -24,6 +24,7 @@ export const SignUpForm = () => {
 
   const onSubmit = async (data) => {
       await signup(data);
+      navigate("/signin");
   };
 
   const handleSubmit = createSubmitHandlerWithToast(method, onSubmit);

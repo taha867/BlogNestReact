@@ -11,12 +11,13 @@ const comment_entity_1 = require("../comments/comment-entity/comment.entity");
 const config_1 = __importDefault(require("./config"));
 (0, dotenv_1.config)();
 const configValues = (0, config_1.default)();
+const isProduction = configValues.nodeEnv === 'production';
+const isLocalHost = configValues.database.host === 'localhost' || configValues.database.host === '127.0.0.1';
 const dataSourceOptions = {
     type: 'postgres',
     name: 'default',
-    ssl: {
-        rejectUnauthorized: false,
-    },
+    // Enable SSL if in production OR if connecting to a remote/cloud DB (like Neon)
+    ssl: (isProduction || !isLocalHost) ? { rejectUnauthorized: false } : false,
     host: configValues.database.host,
     port: configValues.database.port,
     username: configValues.database.username,
@@ -27,6 +28,10 @@ const dataSourceOptions = {
     migrationsTableName: 'migrations',
     synchronize: false, // Never use synchronize in production
     logging: false, // Disable verbose logging to prevent hanging
+    // Ensure timestamps are handled in UTC
+    extra: {
+        timezone: 'UTC',
+    },
 };
 exports.dataSourceOptions = dataSourceOptions;
 //# sourceMappingURL=data-source-options.js.map

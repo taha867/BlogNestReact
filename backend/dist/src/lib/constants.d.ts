@@ -51,6 +51,7 @@ export declare const ERROR_MESSAGES: {
     readonly COMMENT_UPDATE_FAILED: "Unable to update the requested comment";
     readonly POST_ID_REQUIRED: "Post ID is required";
     readonly EITHER_POST_ID_OR_PARENT_ID_REQUIRED: "Either postId or parentId is required";
+    readonly NESTED_COMMENTS_LIMIT_REACHED: "Replies are only allowed on top-level comments";
     readonly INTERNAL_SERVER_ERROR: "Internal server error";
 };
 export declare const VALIDATION_MESSAGES: {

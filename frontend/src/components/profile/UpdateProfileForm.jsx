@@ -31,9 +31,9 @@ export const UpdateProfileForm = () => {
       formData.append("phone", phone);
 
       // Handle Image Logic
-      if (image instanceof File) {
+      if (data.image instanceof File) {
         // New file selected
-        formData.append("image", image);
+        formData.append("image", data.image);
       } else if (data.image === null && user.image) {
         // Image explicitly removed (data.image set to null by FormFileInput)
         // Send empty string to indicate removal to backend
@@ -55,7 +55,7 @@ export const UpdateProfileForm = () => {
         {/* Profile Image Upload - Centered */}
         <div className="flex justify-center mb-6">
           <FormFileInput
-            control={form.control}
+            control={method.control}
             name="image"
             label="Profile Image"
             accept="image/*"

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { formatDistanceToNow } from "date-fns";
+import { enUS } from "date-fns/locale";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CommentForm } from "./CommentForm";
@@ -15,6 +16,7 @@ export const CommentItem = ({ comment, postId }) => {
   const [showReplies, setShowReplies] = useState(false);
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [, setCurrentTime] = useState(Date.now());
   const deleteDialogRef = useRef(null);
 
   const commentRef = useRef(comment);
@@ -23,6 +25,15 @@ export const CommentItem = ({ comment, postId }) => {
   useEffect(() => {
     commentRef.current = comment;
   }, [comment]);
+
+  // Update timestamp every minute to keep "time ago" current
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 60000); // Update every 60 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   const {
     author,
@@ -38,7 +49,7 @@ export const CommentItem = ({ comment, postId }) => {
   const isCommentAuthor = user?.id === author?.id;
 
   const timeAgo = createdAt 
-    ? formatDistanceToNow(new Date(createdAt), { addSuffix: true })
+    ? formatDistanceToNow(new Date(createdAt), { addSuffix: true, locale: enUS })
     : "";
 
   // React Query mutation for updating comment

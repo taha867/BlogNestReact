@@ -207,13 +207,10 @@ let PostsService = class PostsService {
             .leftJoinAndSelect("comment.author", "author")
             .leftJoinAndSelect("comment.replies", "reply")
             .leftJoinAndSelect("reply.author", "replyAuthor")
-            .leftJoinAndSelect("reply.replies", "grandChild")
-            .leftJoinAndSelect("grandChild.author", "grandChildAuthor")
             .where("comment.postId = :postId", { postId })
             .andWhere("comment.parentId IS NULL")
             .orderBy("comment.createdAt", "DESC")
-            .addOrderBy("reply.createdAt", "ASC")
-            .addOrderBy("grandChild.createdAt", "ASC");
+            .addOrderBy("reply.createdAt", "ASC");
         const paginatedResult = await this.paginationService.paginateQueryBuilder(qb, page, limit);
         return {
             data: {
