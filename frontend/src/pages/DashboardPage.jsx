@@ -1,5 +1,3 @@
 import { DashboardContainer } from "../containers/DashboardContainer.jsx";
 
-export const DashboardPage = () => {
-  return <DashboardContainer />;
-};
+export const DashboardPage = () => <DashboardContainer />;

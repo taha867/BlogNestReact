@@ -11,8 +11,9 @@ import { POST_STATUS } from "../../utils/constants";
 
 export const PostList = ({ onEditPost, onDeletePost }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [status, setStatus] = useState(POST_STATUS.PUBLISHED);
   const [searchParams] = useSearchParams();
+  const initialStatus = searchParams.get("status") || POST_STATUS.PUBLISHED;
+  const [status, setStatus] = useState(initialStatus);
   const searchQuery = searchParams.get("search") || "";
 
   // Backend-driven pagination + search
@@ -49,6 +50,15 @@ export const PostList = ({ onEditPost, onDeletePost }) => {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
+
+  // Sync status with query params
+  useEffect(() => {
+    const statusParam = searchParams.get("status");
+    if (statusParam && (statusParam === POST_STATUS.PUBLISHED || statusParam === POST_STATUS.DRAFT)) {
+      setStatus(statusParam);
+      setCurrentPage(1);
+    }
+  }, [searchParams]);
 
   const handleTabChange = (value) => {
     setStatus(value);

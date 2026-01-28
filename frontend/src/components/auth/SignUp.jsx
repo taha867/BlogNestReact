@@ -4,8 +4,8 @@ import { Separator } from "@/components/ui/separator";
 import { Github } from "lucide-react";
 import toast from "react-hot-toast";
 import { TOAST_MESSAGES } from "../../utils/constants";
-import {SignUpForm} from "./form/SignUpForm.jsx";
-import {AuthLayout} from "./AuthLayout";
+import { SignUpForm } from "./form/SignUpForm.jsx";
+import { AuthLayout } from "./AuthLayout";
 
 export const SignUp = () => {
   return (
@@ -17,29 +17,20 @@ export const SignUp = () => {
         <SignUpForm />
         <Separator className="bg-slate-200" />
 
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full h-11 bg-white hover:bg-slate-50 border-slate-200"
-          onClick={() =>
-            toast(TOAST_MESSAGES.GITHUB_OAUTH_COMING_SOON, {
-              icon: "🔗",
-              duration: 3000,
-            })
-          }
-        >
-          <Github className="h-4 w-4 mr-2" />
-          Continue with GitHub
-        </Button>
-
         <div className="space-y-3 mt-3">
           <p className="text-[10px] text-center text-slate-500 leading-tight">
             By clicking continue, you agree to our{" "}
-            <a className="text-blue-600 hover:text-blue-700 hover:underline" href="#">
+            <a
+              className="text-blue-600 hover:text-blue-700 hover:underline"
+              href="#"
+            >
               Terms of Service
             </a>{" "}
             and{" "}
-            <a className="text-blue-600 hover:text-blue-700 hover:underline" href="#">
+            <a
+              className="text-blue-600 hover:text-blue-700 hover:underline"
+              href="#"
+            >
               Privacy Policy
             </a>
             .
@@ -59,4 +50,3 @@ export const SignUp = () => {
     </AuthLayout>
   );
 };
-

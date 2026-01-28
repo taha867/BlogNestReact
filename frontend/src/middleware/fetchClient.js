@@ -225,20 +225,21 @@ export const fetchClient = async (url, options = {}, metadata = {}) => {
     ? url
     : `${baseUrl}${cleanPath}`;
 
-  // Add timeout using AbortController
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000); // cancels request after 10 seconds
+  // Use modern AbortSignal.timeout() for cleaner, more efficient timeouts
+  // If an external signal is provided, we use AbortSignal.any to merge them
+  const timeoutSignal = AbortSignal.timeout(10000); // 10s timeout
+  const signal = options.signal 
+    ? AbortSignal.any([options.signal, timeoutSignal]) 
+    : timeoutSignal;
 
   try {
     // Execute request
     const response = await makeRequest(fullUrl, {
       ...options,
-      signal: controller.signal,
+      signal,
     });
 
-    clearTimeout(timeoutId);
-
-    // Parse response
+    // parse response
     const responseData = await response.json();
     const { data, ...rest } = responseData || {};
     const { status, ok, headers } = response;
@@ -270,8 +271,6 @@ export const fetchClient = async (url, options = {}, metadata = {}) => {
       response, // Full response object for advanced use cases
     };
   } catch (error) {
-    clearTimeout(timeoutId);
-
     // Log error in development
     if (import.meta.env.DEV) {
       console.error(`[Error] ${error.message} ${fullUrl}`);

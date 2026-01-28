@@ -1,6 +1,3 @@
-import {CreatePost} from "../components/posts/CreatePost.jsx";
+import { CreatePost } from "../components/posts/CreatePost.jsx";
 
-export const CreatePostPage = () => {
-  return <CreatePost />;
-};
-
+export const CreatePostPage = () => <CreatePost />;

@@ -45,7 +45,7 @@ export const CreatePostForm = ({ onPostCreated }) => {
     startFormTransition(() => {
       method.reset();
       // Switch to list tab after successful creation
-      onPostCreated?.();
+      onPostCreated?.(status);
     });
   };
 

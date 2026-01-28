@@ -11,7 +11,7 @@ import { createSubmitHandlerWithToast } from "../../../utils/formSubmitWithToast
 export const ForgotPasswordForm = () => {
   const { requestPasswordReset, isLoading } = useAuth();
 
-  const method = useForm({
+  const methods = useForm({
     resolver: yupResolver(forgotPasswordSchema),
     defaultValues: {
       email: "",
@@ -20,16 +20,16 @@ export const ForgotPasswordForm = () => {
 
   const onSubmit = async (data) => {
     await requestPasswordReset({ email: data.email });
-    method.reset();
+    methods.reset();
   };
 
-  const handleSubmit = createSubmitHandlerWithToast(method, onSubmit);
+  const handleSubmit = createSubmitHandlerWithToast(methods, onSubmit);
 
   return (
-    <Form {...method}>
+    <Form {...methods}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <FormField
-          control={method.control}
+          control={methods.control}
           name="email"
           type="email"
           label="Email"
@@ -41,7 +41,7 @@ export const ForgotPasswordForm = () => {
           type="submit"
           variant="success"
           className="w-full h-11 font-medium"
-          disabled={isLoading || !method.formState.isDirty}
+          disabled={isLoading || !methods.formState.isDirty}
         >
           {isLoading ? (
             <>

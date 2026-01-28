@@ -11,7 +11,7 @@ import { createSubmitHandlerWithToast } from "../../utils/formSubmitWithToast";
 export const UpdateProfileForm = () => {
   const { user, updateProfileImage, isLoading } = useAuth(); // Using updateProfileImage as the general update hook for now
 
-  const method = useForm({
+  const methods = useForm({
     resolver: yupResolver(updateProfileSchema),
     defaultValues: {
       name: user?.name || "",
@@ -46,16 +46,16 @@ export const UpdateProfileForm = () => {
     }
   };
 
-  const handleSubmit = createSubmitHandlerWithToast(method, onSubmit);
+  const handleSubmit = createSubmitHandlerWithToast(methods, onSubmit);
 
   return (
-    <Form {...method}>
+    <Form {...methods}>
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Profile Image Upload */}
         {/* Profile Image Upload - Centered */}
         <div className="flex justify-center mb-6">
           <FormFileInput
-            control={method.control}
+            control={methods.control}
             name="image"
             label="Profile Image"
             accept="image/*"
@@ -68,14 +68,14 @@ export const UpdateProfileForm = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField
-            control={method.control}
+            control={methods.control}
             name="name"
             label="Full Name"
             placeholder="John Doe"
             disabled={isLoading}
           />
           <FormField
-            control={method.control}
+            control={methods.control}
             name="phone"
             label="Phone Number"
             placeholder="+1234567890"
@@ -84,7 +84,7 @@ export const UpdateProfileForm = () => {
         </div>
 
         <FormField
-          control={method.control}
+          control={methods.control}
           name="email"
           type="email"
           label="Email Address"
@@ -96,7 +96,7 @@ export const UpdateProfileForm = () => {
             <Button
                type="submit"
                className="w-full md:w-auto min-w-[140px] h-11 font-semibold text-base bg-green-600 hover:bg-green-700 text-white shadow-md hover:shadow-lg transition-all"
-               disabled={isLoading || !method.formState.isDirty}
+               disabled={isLoading || !methods.formState.isDirty}
              >
                {isLoading ? (
                  <>

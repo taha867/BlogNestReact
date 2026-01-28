@@ -13,7 +13,7 @@ export const SignUpForm = () => {
   const navigate = useNavigate();
   const { signup, isLoading } = useAuth();
 
-  const method = useForm({
+  const methods = useForm({
     resolver: yupResolver(signupSchema),
     defaultValues: {
       name: "",
@@ -29,13 +29,13 @@ export const SignUpForm = () => {
       navigate("/signin");
   };
 
-  const handleSubmit = createSubmitHandlerWithToast(method, onSubmit);
+  const handleSubmit = createSubmitHandlerWithToast(methods, onSubmit);
 
   return (
-    <Form {...method}>
+    <Form {...methods}>
       <form onSubmit={handleSubmit} className="space-y-2">
         <FormField
-          control={method.control}
+          control={methods.control}
           name="name"
           type="text"
           label="Full name"
@@ -45,7 +45,7 @@ export const SignUpForm = () => {
         />
 
         <FormField
-          control={method.control}
+          control={methods.control}
           name="email"
           type="email"
           label="Email"
@@ -54,7 +54,7 @@ export const SignUpForm = () => {
         />
 
         <FormField
-          control={method.control}
+          control={methods.control}
           name="phone"
           type="tel"
           label="Phone"
@@ -63,7 +63,7 @@ export const SignUpForm = () => {
         />
 
         <FormField
-          control={method.control}
+          control={methods.control}
           name="password"
           type="password"
           label="Password"
@@ -74,7 +74,7 @@ export const SignUpForm = () => {
         />
 
         <FormField
-          control={method.control}
+          control={methods.control}
           name="confirmPassword"
           type="password"
           label="Confirm password"
@@ -88,7 +88,7 @@ export const SignUpForm = () => {
           type="submit"
           variant="success"
           className="w-full h-11 font-medium"
-          disabled={isLoading || !method.formState.isDirty}
+          disabled={isLoading || !methods.formState.isDirty}
         >
           {isLoading ? (
             <>

@@ -15,13 +15,11 @@ const {
   CLEAR_MESSAGES,
   FORGOT_PASSWORD_SUCCESS,
   RESET_PASSWORD_SUCCESS,
+  SETINITIALIZING,
 } = AUTH_ACTIONS;
 
 export const authReducer = (state, action) => {
-  const {
-    type,
-    payload,
-  } = action;
+  const { type, payload } = action;
 
   switch (type) {
     case LOGIN_SUCCESS:
@@ -42,7 +40,7 @@ export const authReducer = (state, action) => {
         ...state,
       };
 
-    case "SET_INITIALIZING":
+    case SETINITIALIZING:
       return {
         ...state,
         isInitializing: payload.isInitializing,
@@ -104,5 +102,3 @@ export const authActions = {
     type: RESET_PASSWORD_SUCCESS,
   }),
 };
-
-//Your component → dispatch(action) → authReducer(state, action) → newState

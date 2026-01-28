@@ -13,7 +13,7 @@ export const SignInForm = () => {
   const { signin, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  const method = useForm({
+  const methods = useForm({
     resolver: yupResolver(signinSchema),
     defaultValues: {
       email: "",
@@ -26,13 +26,13 @@ export const SignInForm = () => {
     navigate("/dashboard");
   };
 
-  const handleSubmit = createSubmitHandlerWithToast(method, onSubmit);
+  const handleSubmit = createSubmitHandlerWithToast(methods, onSubmit);
 
   return (
-    <Form {...method}>
+    <Form {...methods}>
       <form onSubmit={handleSubmit} className="space-y-3">
         <FormField
-          control={method.control}
+          control={methods.control}
           name="email"
           type="email"
           label="Email"
@@ -40,7 +40,7 @@ export const SignInForm = () => {
         />
 
         <FormField
-          control={method.control}
+          control={methods.control}
           name="password"
           type="password"
           label="Password"
@@ -53,7 +53,7 @@ export const SignInForm = () => {
           type="submit"
           variant="success"
           className="w-full h-11 font-medium"
-          disabled={isLoading || !method.formState.isDirty}
+          disabled={isLoading || !methods.formState.isDirty}
         >
           {isLoading ? (
             <>

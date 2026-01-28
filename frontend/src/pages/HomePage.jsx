@@ -1,5 +1,3 @@
 import { Home } from "../components/home/Home";
 
-export const HomePage = () => {
-  return <Home />;
-};
+export const HomePage = () => <Home />;

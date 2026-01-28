@@ -1,7 +1,3 @@
-import {SignIn} from "../../components/auth/SignIn.jsx";
+import { SignIn } from "../../components/auth/SignIn.jsx";
 
-export const SignInPage = () => {
-  return <SignIn />;
-};
-
-
+export const SignInPage = () => <SignIn />;

@@ -37,6 +37,7 @@ export const ProfileContainer = () => {
               <CardHeader>
                 <CardTitle>Profile Information</CardTitle>
               </CardHeader>
+              
               <CardContent>
                 <UpdateProfileForm />
               </CardContent>

@@ -4,8 +4,8 @@ import {CreatePostForm} from "./form/CreatePostForm.jsx";
 export const CreatePost = () => {
   const navigate = useNavigate();
 
-  const handlePostCreated = () => {
-    navigate("/dashboard");
+  const handlePostCreated = (status) => {
+    navigate(`/dashboard?status=${status}`);
   };
 
   return (

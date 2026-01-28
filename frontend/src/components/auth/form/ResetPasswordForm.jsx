@@ -16,7 +16,7 @@ export const ResetPasswordForm = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
 
-  const method = useForm({
+  const methods = useForm({
     resolver: yupResolver(resetPasswordSchema),
     defaultValues: {
       newPassword: "",
@@ -33,20 +33,16 @@ export const ResetPasswordForm = () => {
       newPassword,
       confirmPassword,
     });
-
-    // Redirect to signin after successful reset
-    setTimeout(() => {
-      navigate("/signin");
-    }, 1500);
+    navigate("/signin");
   };
 
-  const handleSubmit = createSubmitHandlerWithToast(method, onSubmit);
+  const handleSubmit = createSubmitHandlerWithToast(methods, onSubmit);
 
   return (
-    <Form {...method}>
+    <Form {...methods}>
       <form onSubmit={handleSubmit} className="space-y-3">
         <FormField
-          control={method.control}
+          control={methods.control}
           name="newPassword"
           type="password"
           label="New Password"
@@ -56,7 +52,7 @@ export const ResetPasswordForm = () => {
         />
 
         <FormField
-          control={method.control}
+          control={methods.control}
           name="confirmPassword"
           type="password"
           label="Confirm New Password"
@@ -68,7 +64,7 @@ export const ResetPasswordForm = () => {
         <Button
           type="submit"
           variant="success"
-          disabled={isLoading || !method.formState.isDirty}
+          disabled={isLoading || !methods.formState.isDirty}
           className="w-full h-11 font-medium"
         >
           {isLoading ? (

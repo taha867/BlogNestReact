@@ -13,7 +13,7 @@ export const ChangePasswordForm = () => {
   const { changePassword, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  const method = useForm({
+  const methods = useForm({
     resolver: yupResolver(changePasswordSchema),
     defaultValues: {
       newPassword: "",
@@ -25,18 +25,17 @@ export const ChangePasswordForm = () => {
   const onSubmit = async (data) => {
     const { newPassword } = data;
     await changePassword(newPassword);
-    setTimeout(() => {
-      navigate("/dashboard");
-    }, 1500);
+    navigate("/dashboard");
+
   };
 
-  const handleSubmit = createSubmitHandlerWithToast(method, onSubmit);
+  const handleSubmit = createSubmitHandlerWithToast(methods, onSubmit);
 
   return (
-    <Form {...method}>
+    <Form {...methods}>
       <form onSubmit={handleSubmit} className="space-y-3">
         <FormField
-          control={method.control}
+          control={methods.control}
           name="newPassword"
           type="password"
           label="Type new password"
@@ -47,7 +46,7 @@ export const ChangePasswordForm = () => {
         />
 
         <FormField
-          control={method.control}
+          control={methods.control}
           name="confirmPassword"
           type="password"
           label="Type new password again"
@@ -60,7 +59,7 @@ export const ChangePasswordForm = () => {
         <Button
           type="submit"
           className="w-full h-11 font-medium bg-green-600 hover:bg-green-700 text-white shadow-sm hover:shadow-md transition-all mt-4"
-          disabled={isLoading || !method.formState.isDirty}
+          disabled={isLoading || !methods.formState.isDirty}
         >
           {isLoading ? (
             <>
