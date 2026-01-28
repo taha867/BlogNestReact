@@ -24,13 +24,23 @@ export async function createApp() {
   );
 
   const config = appConfig();
+  const isProduction = config.nodeEnv === "production";
 
-  app.use(helmet());
+  // Security: Relaxed Helmet for CORS compatibility
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: { policy: "cross-origin" },
+      contentSecurityPolicy: isProduction ? undefined : false,
+    }),
+  );
   app.use(cookieParser());
+
+  // Explicit CORS Origin matching fallback
+  const origin = [config.frontendUrl, "https://blog-nest-react.vercel.app"];
 
   // CORS
   app.enableCors({
-    origin: config.frontendUrl,
+    origin: origin,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Accept", "X-Requested-With"],
@@ -56,6 +66,17 @@ export async function createApp() {
   return { app, config };
 }
 
+// For Vercel, we need a way to ensure the app is initialized before handling requests
+let cachedServer: express.Express;
+
+async function bootstrap() {
+  if (!cachedServer) {
+    await createApp();
+    cachedServer = server;
+  }
+  return cachedServer;
+}
+
 // Logic to run locally vs Vercel
 if (process.env.NODE_ENV !== "production") {
   createApp().then(async ({ app, config }) => {
@@ -63,10 +84,10 @@ if (process.env.NODE_ENV !== "production") {
     await app.listen(port);
     console.log(`${LOG_MESSAGES.APP_RUNNING} on port ${port}`);
   });
-} else {
-  // On Vercel, we just need to ensure the app is initialized
-  // Vercel handles the incoming requests via the exported 'server'
-  createApp();
 }
 
-export default server;
+// Export a handler for Vercel
+export default async (req: express.Request, res: express.Response) => {
+  const serverInstance = await bootstrap();
+  return serverInstance(req, res);
+};
