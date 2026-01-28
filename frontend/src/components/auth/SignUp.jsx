@@ -13,7 +13,7 @@ export const SignUp = () => {
       title="Create an account"
       subtitle="Join our community of writers and readers"
     >
-      <div className="space-y-4">
+      <div className="space-y-3">
         <SignUpForm />
         <Separator className="bg-slate-200" />
 
@@ -32,8 +32,8 @@ export const SignUp = () => {
           Continue with GitHub
         </Button>
 
-        <div className="space-y-4 mt-4">
-          <p className="text-xs text-center text-slate-500">
+        <div className="space-y-3 mt-3">
+          <p className="text-[10px] text-center text-slate-500 leading-tight">
             By clicking continue, you agree to our{" "}
             <a className="text-blue-600 hover:text-blue-700 hover:underline" href="#">
               Terms of Service

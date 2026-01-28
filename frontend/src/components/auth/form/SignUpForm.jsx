@@ -33,7 +33,7 @@ export const SignUpForm = () => {
 
   return (
     <Form {...method}>
-      <form onSubmit={handleSubmit} className="space-y-3">
+      <form onSubmit={handleSubmit} className="space-y-2">
         <FormField
           control={method.control}
           name="name"

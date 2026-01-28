@@ -43,13 +43,13 @@ export const AuthLayout = ({ children, title, subtitle }) => {
   return (
     <div
       ref={vantaRef}
-      className="flex-1 w-full flex items-center justify-center p-4 overflow-hidden relative"
+      className="flex-1 w-full flex items-center justify-center p-4 hide-scrollbar relative"
     >
       {/* Content Container with Glassmorphism */}
-      <div className="w-full max-w-md relative z-10">
+      <div className="w-full max-w-md relative z-10 my-4">
         <div className="backdrop-blur-xl bg-white/70 border border-white/40 shadow-2xl rounded-2xl overflow-hidden p-6 md:p-8 transition-all duration-300 hover:shadow-3xl hover:bg-white/75">
           {(title || subtitle) && (
-            <div className="text-center mb-6 space-y-2">
+            <div className="text-center mb-4 space-y-1">
               {title && (
                 <h1 className="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight">
                   {title}
