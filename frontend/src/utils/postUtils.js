@@ -31,8 +31,9 @@ export const getPostImageUrl = (imagePath) => {
   if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
     return imagePath;
   }
-  const baseURL = import.meta.env.VITE_API_BASE_URL;
-  return `${baseURL}${imagePath}`;
+  const baseURL = import.meta.env.VITE_API_BASE_URL.replace(/\/$/, "");
+  const cleanPath = imagePath.startsWith("/") ? imagePath : `/${imagePath}`;
+  return `${baseURL}${cleanPath}`;
 };
 
 /**

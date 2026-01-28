@@ -219,9 +219,11 @@ const makeRequest = async (url, options = {}) => {
  */
 export const fetchClient = async (url, options = {}, metadata = {}) => {
   // Add base URL if relative URL
+  const baseUrl = import.meta.env.VITE_API_BASE_URL.replace(/\/$/, ""); // Remove trailing slash if exists
+  const cleanPath = url.startsWith("/") ? url : `/${url}`; // Ensure path starts with a slash
   const fullUrl = url.startsWith("http")
     ? url
-    : `${import.meta.env.VITE_API_BASE_URL}${url}`;
+    : `${baseUrl}${cleanPath}`;
 
   // Add timeout using AbortController
   const controller = new AbortController();

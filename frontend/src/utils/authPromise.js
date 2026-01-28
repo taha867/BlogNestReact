@@ -27,8 +27,9 @@ const refreshTokenDuringInit = async () => {
       "Attempting to refresh access token during app initialization..."
     );
 
+    const baseUrl = import.meta.env.VITE_API_BASE_URL.replace(/\/$/, "");
     const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/auth/refreshToken`,
+      `${baseUrl}/auth/refreshToken`,
       {
         method: "POST",
         headers: {
