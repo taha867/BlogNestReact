@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import { useAuth } from "../../../hooks/authHooks/authHooks";
 import { createSubmitHandlerWithToast } from "../../../utils/formSubmitWithToast";
 
 export const SignUpForm = () => {
+  const navigate = useNavigate();
   const { signup, isLoading } = useAuth();
 
   const method = useForm({
