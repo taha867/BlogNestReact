@@ -43,7 +43,7 @@ export const AuthLayout = ({ children, title, subtitle }) => {
   return (
     <div
       ref={vantaRef}
-      className="min-h-screen w-full flex items-center justify-center p-4 overflow-hidden relative"
+      className="flex-1 w-full flex items-center justify-center p-4 overflow-hidden relative"
     >
       {/* Content Container with Glassmorphism */}
       <div className="w-full max-w-md relative z-10">

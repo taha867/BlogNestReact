@@ -13,11 +13,20 @@ export const Navbar = () => {
 
   // Dynamic navigation links based on authentication status
   const baseLinks = [{ label: "Home", to: "/" }];
-  const links = isAuthenticated 
+  const links = isAuthenticated
     ? [...baseLinks, { label: "My Articles", to: "/dashboard" }]
     : baseLinks;
 
   const isActive = (path) => location.pathname === path;
+
+  // Define routes where search should be hidden (auth pages)
+  const authRoutes = [
+    "/signin",
+    "/signup",
+    "/forgot-password",
+    "/reset-password",
+  ];
+  const isAuthPage = authRoutes.includes(location.pathname);
 
   // Close mobile menu when route changes
   useEffect(() => {
@@ -82,7 +91,7 @@ export const Navbar = () => {
               onClick={closeMobileMenu}
             >
               <img
-                src="/AppLogo.jpeg"
+                src="/Logo.png"
                 alt="Blogify Logo"
                 className="h-16 w-auto object-contain"
               />
@@ -107,10 +116,12 @@ export const Navbar = () => {
             ))}
           </div>
 
-          {/* Search Bar (Centered/Right) */}
-          <div className="hidden lg:flex flex-1 max-w-md mx-4">
-            <PostFilter placeholder="Search posts..." />
-          </div>
+          {/* Search Bar (Centered/Right) - Hidden on Auth Pages */}
+          {!isAuthPage && (
+            <div className="hidden lg:flex flex-1 max-w-md mx-4">
+              <PostFilter placeholder="Search posts..." />
+            </div>
+          )}
 
           {/* Auth Actions */}
           <div className="flex-shrink-0 flex items-center gap-4 ml-auto">
@@ -204,13 +215,15 @@ export const Navbar = () => {
               </button>
             </div>
 
-            {/* Mobile Search */}
-            <div className="p-6 border-b">
-              <PostFilter
-                onSearch={closeMobileMenu}
-                placeholder="Search posts..."
-              />
-            </div>
+            {/* Mobile Search - Hidden on Auth Pages */}
+            {!isAuthPage && (
+              <div className="p-6 border-b">
+                <PostFilter
+                  onSearch={closeMobileMenu}
+                  placeholder="Search posts..."
+                />
+              </div>
+            )}
 
             {/* Navigation Links */}
             <nav className="flex-1 overflow-y-auto py-6">

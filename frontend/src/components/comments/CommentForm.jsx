@@ -98,46 +98,60 @@ export const CommentForm = ({
 
   return (
     <Form {...method}>
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <FormField
-          control={method.control}
-          name="body"
-          type="textarea"
-          placeholder={placeholder}
-          rows={3}
-          disabled={isPending}
-        />
-        <div className="flex justify-end gap-2">
-          {isEditMode && onCancel && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCancel}
-              disabled={isPending}
-              size="sm"
-            >
-              Cancel
-            </Button>
-          )}
-          <Button
-            type="submit"
-            variant="success"
-            disabled={isPending || !method.formState.isDirty}
-            size="sm"
-          >
-            {isPending ? (
-              <>
-                <Loader2 className="mr-2 h-3 w-3 animate-spin" />
-                {isEditMode ? "Saving..." : "Posting..."}
-              </>
-            ) : isEditMode ? (
-              "Save"
-            ) : parentId ? (
-              "Reply"
-            ) : (
-              "Post"
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Replying to indicator */}
+        {parentId && (
+          <div className="flex items-center gap-2 text-xs font-medium text-slate-500 mb-1">
+            <div className="w-1 h-1 rounded-full bg-slate-400" />
+            <span>Replying to {placeholder.replace("Reply to ", "")}</span>
+          </div>
+        )}
+        
+        <div className="relative group">
+          <FormField
+            control={method.control}
+            name="body"
+            type="textarea"
+            placeholder={placeholder}
+            rows={parentId ? 2 : 3}
+            disabled={isPending}
+            className="w-full resize-none bg-white border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200 rounded-xl"
+          />
+          
+          <div className="flex justify-end items-center gap-3 mt-3">
+            {isEditMode && onCancel && (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={onCancel}
+                disabled={isPending}
+                size="sm"
+                className="text-slate-500 hover:text-slate-700 font-medium"
+              >
+                Cancel
+              </Button>
             )}
-          </Button>
+            <Button
+              type="submit"
+              variant={isEditMode ? "default" : "success"}
+              disabled={isPending || !method.formState.isDirty}
+              size="sm"
+              className={`rounded-full px-6 font-semibold shadow-sm transition-all duration-200 ${
+                !method.formState.isDirty ? "opacity-50" : "hover:shadow-md active:scale-95"
+              } ${
+                isEditMode ? "bg-slate-900 hover:bg-slate-800" : ""
+              }`}
+            >
+              {isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {isEditMode ? "Saving..." : "Posting..."}
+                </>
+              ) : (
+                buttonText
+              )}
+            </Button>
+          </div>
         </div>
       </form>
     </Form>

@@ -23,7 +23,7 @@ export const ForgotPasswordForm = () => {
     method.reset();
   };
 
-  const handleSubmit = createSubmitHandlerWithToast(form, onSubmit);
+  const handleSubmit = createSubmitHandlerWithToast(method, onSubmit);
 
   return (
     <Form {...method}>

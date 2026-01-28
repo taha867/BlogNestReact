@@ -10,7 +10,7 @@ import { getAuthorInfo } from "../../utils/postUtils";
 import { AuthorAvatar } from "../common/AuthorAvatar";
 import { useUpdateComment } from "../../hooks/commentHooks/commentMutations";
 
-export const CommentItem = ({ comment, postId, onReplySuccess }) => {
+export const CommentItem = ({ comment, postId }) => {
   const { isAuthenticated, user } = useAuth();
   const [showReplies, setShowReplies] = useState(false);
   const [showReplyForm, setShowReplyForm] = useState(false);
@@ -55,9 +55,6 @@ export const CommentItem = ({ comment, postId, onReplySuccess }) => {
   const handleReplySuccess = () => {
     setShowReplyForm(false);
     setShowReplies(true); // Show replies after successful reply
-    if (onReplySuccess) {
-      onReplySuccess();
-    }
   };
 
   const handleEdit = () => {
@@ -78,9 +75,7 @@ export const CommentItem = ({ comment, postId, onReplySuccess }) => {
       });
       setIsEditing(false);
       // Call onReplySuccess to refresh comments if provided
-      if (onReplySuccess) {
-        onReplySuccess();
-      }
+      setIsEditing(false);
     } catch (error) {
       throw error;
     }
@@ -95,109 +90,128 @@ export const CommentItem = ({ comment, postId, onReplySuccess }) => {
   const isPending = updateCommentMutation.isPending;
 
   return (
-    <div className="border-b border-gray-100 pb-4 last:border-b-0">
-      {/* Main Comment */}
-      <div className="flex gap-3">
-        {/* Author Avatar */}
-        <div className="flex-shrink-0">
-          <AuthorAvatar author={author} size="md" />
+    <div className="relative group">
+      {/* Thread line for replies - only if it has parentId or has replies */}
+      {parentId && (
+        <div className="absolute -left-6 top-0 bottom-0 w-px bg-slate-200 group-last:bottom-auto group-last:h-8" />
+      )}
+
+      <div className="flex gap-4">
+        {/* Author Avatar with a small decorative ring on hover */}
+        <div className="flex-shrink-0 relative group/avatar">
+          <div className="absolute -inset-1 rounded-full bg-blue-500/0 group-hover/avatar:bg-blue-500/10 transition-colors duration-300" />
+          <AuthorAvatar author={author} size="md" className="ring-2 ring-white" />
         </div>
 
         {/* Comment Content */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between mb-1">
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-gray-900">{authorName}</span>
-              <span className="text-xs text-gray-500">{timeAgo}</span>
+          <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-slate-900 hover:text-blue-600 cursor-pointer transition-colors duration-200">
+                  {authorName}
+                </span>
+                <span className="w-1 h-1 rounded-full bg-slate-300" />
+                <span className="text-xs font-medium text-slate-500">{timeAgo}</span>
+              </div>
+              
+              {/* Comment Actions Menu */}
+              {isAuthenticated && isCommentAuthor && !isEditing && (
+                <CommentActionsMenu
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  disabled={isPending}
+                />
+              )}
             </div>
-            {/* Comment Actions Menu - Only show for comment author */}
-            {isAuthenticated && isCommentAuthor && !isEditing && (
-              <CommentActionsMenu
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                disabled={isPending}
-              />
+
+            {/* Edit Mode or View Mode */}
+            {isEditing ? (
+              <div className="mt-2">
+                <CommentForm
+                  initialValue={body}
+                  onUpdate={handleUpdate}
+                  onCancel={handleCancelEdit}
+                  placeholder="Edit your comment..."
+                />
+              </div>
+            ) : (
+              <p className="text-slate-700 text-[15px] leading-relaxed whitespace-pre-wrap break-all">
+                {body}
+              </p>
             )}
+
+            {/* Actions: Reply and Show/Hide Replies */}
+            <div className="flex items-center gap-4 mt-3 pt-3 border-t border-slate-50">
+              {isAuthenticated && !isEditing && !parentId && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={toggleReplyForm}
+                  className={`h-8 text-xs font-bold transition-all duration-200 ${
+                    showReplyForm 
+                      ? "text-blue-600 bg-blue-50" 
+                      : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+                  }`}
+                >
+                  {showReplyForm ? "Cancel Reply" : "Reply"}
+                </Button>
+              )}
+
+              {hasReplies && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={toggleReplies}
+                  className="h-8 text-xs font-bold text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200"
+                >
+                  {showReplies ? (
+                    <span className="flex items-center gap-1.5">
+                      <ChevronUp className="h-3.5 w-3.5" />
+                      Hide {commentReplies.length} {commentReplies.length === 1 ? "reply" : "replies"}
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1.5">
+                      <ChevronDown className="h-3.5 w-3.5" />
+                      View {commentReplies.length} {commentReplies.length === 1 ? "reply" : "replies"}
+                    </span>
+                  )}
+                </Button>
+              )}
+            </div>
           </div>
 
-          {/* Edit Mode or View Mode */}
-          {isEditing ? (
-            <div className="mt-2">
-              <CommentForm
-                initialValue={body}
-                onUpdate={handleUpdate}
-                onCancel={handleCancelEdit}
-                placeholder="Edit your comment..."
-              />
-            </div>
-          ) : (
-            <p className="text-gray-700 text-sm whitespace-pre-wrap break-all">
-              {body}
-            </p>
-          )}
-
-          {/* Reply Button - Only show for top-level comments and when not editing */}
-          {isAuthenticated && !isEditing && !parentId && (
-            <div className="mt-2">
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={toggleReplyForm}
-                className="h-7 text-xs"
-              >
-                Reply
-              </Button>
-            </div>
-          )}
-
-          {/* Reply Form */}
+          {/* Reply Form Overlay */}
           {showReplyForm && isAuthenticated && (
-            <div className="mt-3 pl-4 border-l-2 border-gray-200">
-              <CommentForm
-                postId={postId}
-                parentId={id}
-                onSuccess={handleReplySuccess}
-                placeholder="Write a reply..."
-              />
+            <div className="mt-4 pl-6 relative">
+              <div className="absolute left-0 top-0 bottom-4 w-px bg-slate-200" />
+              <div className="absolute left-0 top-0 w-4 h-px bg-slate-200" />
+              <div className="bg-slate-50/50 rounded-2xl p-4 border border-slate-100 ring-4 ring-slate-50/50">
+                <CommentForm
+                  postId={postId}
+                  parentId={id}
+                  onSuccess={handleReplySuccess}
+                  placeholder={`Reply to ${authorName}...`}
+                />
+              </div>
             </div>
           )}
 
-          {/* Replies Section */}
-          {hasReplies && (
-            <div className="mt-4">
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={toggleReplies}
-                className="h-7 text-xs text-gray-600 hover:text-gray-900"
-              >
-                {showReplies ? (
-                  <>
-                    <ChevronUp className="h-3 w-3 mr-1" />
-                    Hide replies ({commentReplies.length})
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown className="h-3 w-3 mr-1" />
-                    Show replies ({commentReplies.length})
-                  </>
-                )}
-              </Button>
-
-              {showReplies && (
-                <div className="mt-3 pl-4 border-l-2 border-gray-200 space-y-4">
-                  {commentReplies.map((reply) => (
-                    <CommentItem
-                      key={reply.id}
-                      comment={reply}
-                      postId={postId}
-                      onReplySuccess={onReplySuccess}
-                    />
-                  ))}
+          {/* Replies Section - Threaded */}
+          {showReplies && hasReplies && (
+            <div className="mt-4 pl-6 space-y-6 relative">
+              <div className="absolute left-0 top-0 bottom-6 w-px bg-slate-200" />
+              {commentReplies.map((reply) => (
+                <div key={reply.id} className="relative">
+                  <div className="absolute -left-6 top-5 w-6 h-px bg-slate-200" />
+                  <CommentItem
+                    comment={reply}
+                    postId={postId}
+                  />
                 </div>
-              )}
+              ))}
             </div>
           )}
         </div>

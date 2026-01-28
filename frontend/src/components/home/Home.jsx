@@ -47,8 +47,8 @@ export const Home = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-6xl mx-auto px-4 py-8 sm:py-12 flex flex-col min-h-[calc(100vh-4rem)]">
+    <div className="bg-white flex flex-col flex-1">
+      <div className="max-w-6xl mx-auto px-4 py-8 sm:py-12 flex flex-col flex-1 w-full">
         {/* Blog Posts */}
         <div className="space-y-6 flex-1">
           {!hasPosts ? (

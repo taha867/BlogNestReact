@@ -8,7 +8,7 @@ export const ResetPassword = () => {
       subtitle="Enter your new password below"
     >
       <div className="space-y-4">
-        <ResetPasswordForm token={token} />
+        <ResetPasswordForm />
       </div>
     </AuthLayout>
   );

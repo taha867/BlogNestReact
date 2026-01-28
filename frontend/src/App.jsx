@@ -19,7 +19,7 @@ export const App = () => {
     <Router>
       <div className="min-h-screen bg-background flex flex-col">
         <Navbar />
-        <main className="flex-1">
+        <main className="flex-1 flex flex-col">
           <Routes>
             {/* ---------- Public routes ---------- */}
             <Route path="/" element={<HomePage />} />
