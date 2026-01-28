@@ -73,7 +73,7 @@ export class EmailService {
       throw new Error(ERROR_MESSAGES.EMAIL_SEND_FAILED);
     }
 
-    const frontendUrl = this.config.frontendUrl;
+    const frontendUrl = this.config.frontendUrl.replace(/\/$/, '');
     const resetLink: string = `${frontendUrl}/reset-password?token=${emailDto.resetToken}`;
 
     const htmlTemplate: string = getPasswordResetHtmlTemplate(
