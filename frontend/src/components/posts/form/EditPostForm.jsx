@@ -18,6 +18,8 @@ import { useImperativeDialog } from "../../../hooks/useImperativeDialog";
 import { POST_STATUS } from "../../../utils/constants";
 import { createSubmitHandlerWithToast } from "../../../utils/formSubmitWithToast";
 
+import toast from "react-hot-toast";
+
 export const EditPostForm = forwardRef((_props, ref) => {
   const {
     isOpen,
@@ -45,7 +47,7 @@ export const EditPostForm = forwardRef((_props, ref) => {
     [openDialogState, closeDialogState, updatePostMutation.isPending],
   );
 
-  const method = useForm({
+  const methods = useForm({
     resolver: yupResolver(postSchema),
     defaultValues: {
       title: "",
@@ -60,14 +62,14 @@ export const EditPostForm = forwardRef((_props, ref) => {
   useEffect(() => {
     if (currentPost) {
       const { title, body, status, image } = currentPost;
-      method.reset({
+      methods.reset({
         title: title || "",
         body: body || "",
         status: status || POST_STATUS.DRAFT,
         image: image || null, // Set existing image URL for preview
       });
     }
-  }, [currentPost, method]);
+  }, [currentPost, methods]);
 
   const onSubmit = async (data) => {
     if (!currentPost?.id) return;
@@ -87,16 +89,19 @@ export const EditPostForm = forwardRef((_props, ref) => {
       formData.append("image", "");
     }
 
-    await updatePostMutation.mutateAsync({
+    const { response:{message}={} } = await updatePostMutation.mutateAsync({
       postId: currentPost.id,
       formData,
       previousStatus: currentPost.status,
     });
 
     closeDialogState();
+    if (message) {
+      toast.success(message);
+    }
   };
 
-  const handleSubmit = createSubmitHandlerWithToast(method, onSubmit);
+  const handleSubmit = createSubmitHandlerWithToast(methods, onSubmit);
 
   const handleClose = () => {
     if (!updatePostMutation.isPending) {
@@ -114,10 +119,10 @@ export const EditPostForm = forwardRef((_props, ref) => {
           </DialogDescription>
         </DialogHeader>
 
-        <Form {...method}>
+        <Form {...methods}>
           <form onSubmit={handleSubmit} className="space-y-4">
             <FormField
-              control={method.control}
+              control={methods.control}
               name="title"
               type="text"
               label="Title"
@@ -125,7 +130,7 @@ export const EditPostForm = forwardRef((_props, ref) => {
             />
 
             <FormField
-              control={method.control}
+              control={methods.control}
               name="body"
               type="textarea"
               label="Content"
@@ -135,7 +140,7 @@ export const EditPostForm = forwardRef((_props, ref) => {
             />
 
             <FormSelect
-              control={method.control}
+              control={methods.control}
               name="status"
               label="Status"
               placeholder="Select post status"
@@ -146,7 +151,7 @@ export const EditPostForm = forwardRef((_props, ref) => {
             />
 
             <FormFileInput
-              control={method.control}
+              control={methods.control}
               name="image"
               label="Post Image (Optional)"
               maxSizeMB={5}
@@ -168,7 +173,7 @@ export const EditPostForm = forwardRef((_props, ref) => {
                 type="submit"
                 variant="success"
                 disabled={
-                  updatePostMutation.isPending || !method.formState.isDirty
+                  updatePostMutation.isPending || !methods.formState.isDirty
                 }
                 className="flex-1"
               >

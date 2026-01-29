@@ -11,12 +11,14 @@ import { useCreatePost } from "../../../hooks/postHooks/postMutations";
 import { POST_STATUS } from "../../../utils/constants";
 import { createSubmitHandlerWithToast } from "../../../utils/formSubmitWithToast";
 
+import toast from "react-hot-toast";
+
 export const CreatePostForm = ({ onPostCreated }) => {
   const [isFormPending, startFormTransition] = useTransition();
 
   const createPostMutation = useCreatePost();
 
-  const method = useForm({
+  const methods = useForm({
     resolver: yupResolver(postSchema),
     defaultValues: {
       title: "",
@@ -40,16 +42,22 @@ export const CreatePostForm = ({ onPostCreated }) => {
       formData.append("image", data.image);
     }
 
-    await createPostMutation.mutateAsync(formData);
+    const response = await createPostMutation.mutateAsync(formData);
 
     startFormTransition(() => {
-      method.reset();
+      methods.reset();
       // Switch to list tab after successful creation
       onPostCreated?.(status);
+      
+      // Delay toast until after transition to ensure loading state is cleared
+      const{message={}}=response;
+      if (message) {
+        toast.success(message);
+      }
     });
   };
 
-  const handleSubmit = createSubmitHandlerWithToast(method, onSubmit);
+  const handleSubmit = createSubmitHandlerWithToast(methods, onSubmit);
 
   return (
     <Card>
@@ -57,10 +65,10 @@ export const CreatePostForm = ({ onPostCreated }) => {
         <CardTitle>Create New Post</CardTitle>
       </CardHeader>
       <CardContent>
-        <Form {...method}>
+        <Form {...methods}>
           <form onSubmit={handleSubmit} className="space-y-4">
             <FormField
-              control={method.control}
+              control={methods.control}
               name="title"
               type="text"
               label="Title"
@@ -68,7 +76,7 @@ export const CreatePostForm = ({ onPostCreated }) => {
             />
 
             <FormField
-              control={method.control}
+              control={methods.control}
               name="body"
               type="textarea"
               label="Content"
@@ -78,7 +86,7 @@ export const CreatePostForm = ({ onPostCreated }) => {
             />
 
             <FormSelect
-              control={method.control}
+              control={methods.control}
               name="status"
               label="Status"
               placeholder="Select post status"
@@ -89,7 +97,7 @@ export const CreatePostForm = ({ onPostCreated }) => {
             />
 
             <FormFileInput
-              control={method.control}
+              control={methods.control}
               name="image"
               label="Post Image (Optional)"
               maxSizeMB={5}
@@ -101,7 +109,7 @@ export const CreatePostForm = ({ onPostCreated }) => {
               disabled={
                 createPostMutation.isPending ||
                 isFormPending ||
-                !method.formState.isDirty
+                !methods.formState.isDirty
               }
               className="w-full"
             >

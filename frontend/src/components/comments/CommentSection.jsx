@@ -5,7 +5,7 @@ import { useAuth } from "../../hooks/authHooks/authHooks";
 import {CommentItem} from "./CommentItem";
 import {CommentForm} from "./CommentForm";
 import { Button } from "@/components/ui/button";
-import {AppInitializer} from "../common/AppInitializer";
+import { CommentsLoader } from "./CommentsLoader";
 
 export const CommentSection = ({ postId }) => {
   const { isAuthenticated } = useAuth();
@@ -45,11 +45,7 @@ export const CommentSection = ({ postId }) => {
 
 
   if (isLoading) {
-    return (
-      <div className="py-8">
-        <AppInitializer />
-      </div>
-    );
+    return <CommentsLoader />;
   }
 
   return (
