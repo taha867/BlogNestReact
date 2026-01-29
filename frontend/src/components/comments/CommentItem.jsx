@@ -109,8 +109,7 @@ export const CommentItem = ({ comment, postId }) => {
 
       <div className="flex gap-4">
         {/* Author Avatar with a small decorative ring on hover */}
-        <div className="flex-shrink-0 relative group/avatar">
-          <div className="absolute -inset-1 rounded-full bg-blue-500/0 group-hover/avatar:bg-blue-500/10 transition-colors duration-300" />
+        <div className="flex-shrink-0 relative">
           <AuthorAvatar author={author} size="md" className="ring-2 ring-white" />
         </div>
 
