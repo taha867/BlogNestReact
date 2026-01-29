@@ -245,7 +245,7 @@ export const fetchClient = async (url, options = {}, metadata = {}) => {
     const { status, ok, headers } = response;
 
     // Show success toast (if message exists and not disabled)
-    if (metadata.showToast !== false) {
+    if (metadata.showToast !== false && metadata.showSuccessToast !== false) {
       const { message: rootMessage, data: { message: dataMessage } = {} } =
         responseData || {};
 

@@ -26,7 +26,7 @@ export const createComment = async (commentData) => {
   const response = await fetchClient("/comments", {
     method: "POST",
     body: JSON.stringify(commentData),
-  });
+  }, { showSuccessToast: false });
   return response.data;
 };
 
@@ -40,7 +40,7 @@ export const updateComment = async (commentId, body) => {
   const response = await fetchClient(`/comments/${commentId}`, {
     method: "PUT",
     body: JSON.stringify({ body }),
-  });
+  }, { showSuccessToast: false });
   return response.data;
 };
 
@@ -52,6 +52,6 @@ export const updateComment = async (commentId, body) => {
 export const deleteComment = async (commentId) => {
   const response = await fetchClient(`/comments/${commentId}`, {
     method: "DELETE",
-  });
+  }, { showSuccessToast: false });
   return response.data;
 };

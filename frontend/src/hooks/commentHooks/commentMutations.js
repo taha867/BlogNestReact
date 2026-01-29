@@ -6,6 +6,8 @@ import {
   deleteComment,
 } from "../../services/commentService";
 import { postCommentsKeys } from "./commentQueries";
+import { TOAST_MESSAGES } from "../../utils/constants";
+import toast from "react-hot-toast";
 
 
 export const useCreateComment = () => {
@@ -31,7 +33,7 @@ export const useCreateComment = () => {
             );
           },
         });
-        
+        toast.success(TOAST_MESSAGES.COMMENT_CREATED_SUCCESS);
       }
     },
   });
@@ -60,7 +62,7 @@ export const useUpdateComment = () => {
             );
           },
         });
-        
+        toast.success(TOAST_MESSAGES.COMMENT_UPDATED_SUCCESS);
       }
     },
   });
@@ -80,7 +82,8 @@ export const useDeleteComment = () => {
       queryClient.invalidateQueries({
         queryKey: postCommentsKeys.lists(),
       });
-          },
+      toast.success(TOAST_MESSAGES.COMMENT_DELETED_SUCCESS);
+    },
   });
 };
 

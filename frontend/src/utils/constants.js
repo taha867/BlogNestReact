@@ -91,6 +91,9 @@ export const TOAST_MESSAGES = {
   POST_CREATED_SUCCESS: "Post created successfully!",
   POST_UPDATED_SUCCESS: "Post updated successfully!",
   POST_DELETED_SUCCESS: "Post deleted successfully!",
+  COMMENT_CREATED_SUCCESS: "Comment created successfully!",
+  COMMENT_UPDATED_SUCCESS: "Comment updated successfully!",
+  COMMENT_DELETED_SUCCESS: "Comment deleted successfully!",
 
   // Error messages
   INVALID_CREDENTIALS: "Invalid credentials. Please try again.",

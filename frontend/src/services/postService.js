@@ -60,7 +60,7 @@ export const createPost = async (formData) => {
   const response = await fetchClient("/posts", {
     method: "POST",
     body: formData,
-  });
+  }, { showSuccessToast: false });
   return response.data;
 };
 
@@ -69,7 +69,7 @@ export const updatePost = async (postId, formData) => {
   const response = await fetchClient(`/posts/${postId}`, {
     method: "PUT",
     body: formData,
-  });
+  }, { showSuccessToast: false });
   return response.data;
 };
 
@@ -77,7 +77,7 @@ export const updatePost = async (postId, formData) => {
 export const deletePost = async (postId) => {
   await fetchClient(`/posts/${postId}`, {
     method: "DELETE",
-  });
+  }, { showSuccessToast: false });
 };
 
 /**

@@ -2,7 +2,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPost, updatePost, deletePost } from "../../services/postService";
 import { homePostsKeys, userPostsKeys, postDetailKeys } from "../../utils/queryKeys";
-import { POST_STATUS } from "../../utils/constants";
+import { POST_STATUS, TOAST_MESSAGES } from "../../utils/constants";
+import toast from "react-hot-toast";
 
 const { PUBLISHED } = POST_STATUS;
 
@@ -20,6 +21,7 @@ export const useCreatePost = () => {
       if (newPost?.status === PUBLISHED) {
         await queryClient.refetchQueries({ queryKey: homePostsKeys.all });
       }
+      toast.success(TOAST_MESSAGES.POST_CREATED_SUCCESS);
     },
   });
 };
@@ -49,10 +51,9 @@ export const useUpdatePost = () => {
       const wasPublished = previousStatus === PUBLISHED;
       const isNowPublished = updatedPost?.status === PUBLISHED;
       if (wasPublished || isNowPublished) {
-
         await queryClient.refetchQueries({ queryKey: homePostsKeys.all });
       }
-
+      toast.success(TOAST_MESSAGES.POST_UPDATED_SUCCESS);
     },
   });
 };
@@ -72,6 +73,7 @@ export const useDeletePost = () => {
       if (wasPublished) {
         await queryClient.refetchQueries({ queryKey: homePostsKeys.all });
       }
+      toast.success(TOAST_MESSAGES.POST_DELETED_SUCCESS);
     },
   });
 };
