@@ -133,13 +133,11 @@ export const CommentForm = ({
             )}
             <Button
               type="submit"
-              variant={isEditMode ? "default" : "success"}
+              variant="success"
               disabled={isPending || !method.formState.isDirty}
               size="sm"
               className={`rounded-full px-6 font-semibold shadow-sm transition-all duration-200 ${
                 !method.formState.isDirty ? "opacity-50" : "hover:shadow-md active:scale-95"
-              } ${
-                isEditMode ? "bg-slate-900 hover:bg-slate-800" : ""
               }`}
             >
               {isPending ? (
