@@ -136,7 +136,7 @@ export const CommentForm = ({
               variant="success"
               disabled={isPending || !method.formState.isDirty}
               size="sm"
-              className={`rounded-full px-6 font-semibold shadow-sm transition-all duration-200 ${
+              className={`rounded-full px-6 font-semibold shadow-sm transition-all duration-200 bg-green-600 text-white hover:bg-green-700 ${
                 !method.formState.isDirty ? "opacity-50" : "hover:shadow-md active:scale-95"
               }`}
             >
