@@ -11,10 +11,11 @@ export const useCreatePost = () => {
   
   return useMutation({
     mutationFn: async (formData) => {
+      // FormData middleware handles Content-Type automatically
       return await createPost(formData);
     },
-    onSuccess: async (response) => {
-      const newPost = response.data;
+    onSuccess: async (newPost) => {
+
       await queryClient.refetchQueries({ queryKey: userPostsKeys.all });
       if (newPost?.status === PUBLISHED) {
         await queryClient.refetchQueries({ queryKey: homePostsKeys.all });
@@ -29,11 +30,11 @@ export const useUpdatePost = () => {
 
   return useMutation({
     mutationFn: async ({ postId, formData, previousStatus }) => {
-      const response = await updatePost(postId, formData);
-      return { response, previousStatus };
+      // FormData middleware handles Content-Type automatically
+      const updatedPost = await updatePost(postId, formData);
+      return { updatedPost, previousStatus };
     },
-    onSuccess: async ({ response, previousStatus }, variables) => {
-      const updatedPost = response.data;
+    onSuccess: async ({ updatedPost, previousStatus }, variables) => {
       const { postId } = variables;
 
 
@@ -62,8 +63,8 @@ export const useDeletePost = () => {
 
   return useMutation({
     mutationFn: async ({ postId, wasPublished }) => {
-      const response = await deletePost(postId);
-      return { response, postId, wasPublished };
+      await deletePost(postId);
+      return { postId, wasPublished };
     },
     onSuccess: async ({ wasPublished }) => {
 

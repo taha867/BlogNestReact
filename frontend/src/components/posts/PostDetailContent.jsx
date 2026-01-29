@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ImageIcon } from "lucide-react";
 import { usePostDetail } from "../../hooks/postHooks/postQueries";
-import { PostDetailSkeleton } from "./PostDetailSkeleton";
+import {PostInitializer} from "./PostInitializer";
 import {
   calculateReadTime,
   formatPostDate,
@@ -25,7 +25,7 @@ export const PostDetailContent = ({ postId }) => {
   const showPlaceholder = !imageUrl || imageError;
 
   if (isLoading) {
-    return <PostDetailSkeleton />;
+    return <PostInitializer />;
   }
 
   if (error || !post) {

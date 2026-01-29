@@ -18,8 +18,6 @@ import { useImperativeDialog } from "../../../hooks/useImperativeDialog";
 import { POST_STATUS } from "../../../utils/constants";
 import { createSubmitHandlerWithToast } from "../../../utils/formSubmitWithToast";
 
-import toast from "react-hot-toast";
-
 export const EditPostForm = forwardRef((_props, ref) => {
   const {
     isOpen,
@@ -89,16 +87,13 @@ export const EditPostForm = forwardRef((_props, ref) => {
       formData.append("image", "");
     }
 
-    const { response:{message}={} } = await updatePostMutation.mutateAsync({
+    await updatePostMutation.mutateAsync({
       postId: currentPost.id,
       formData,
       previousStatus: currentPost.status,
     });
 
     closeDialogState();
-    if (message) {
-      toast.success(message);
-    }
   };
 
   const handleSubmit = createSubmitHandlerWithToast(methods, onSubmit);

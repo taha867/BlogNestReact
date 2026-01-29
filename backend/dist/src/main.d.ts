@@ -1,5 +1,5 @@
 import { NestExpressApplication } from "@nestjs/platform-express";
-declare const server: import("express-serve-static-core").Express;
+import express from "express";
 export declare function createApp(): Promise<{
     app: NestExpressApplication<import("node:http").Server<typeof import("node:http").IncomingMessage, typeof import("node:http").ServerResponse>>;
     config: {
@@ -34,5 +34,6 @@ export declare function createApp(): Promise<{
         };
     };
 }>;
-export default server;
+declare const _default: (req: express.Request, res: express.Response) => Promise<any>;
+export default _default;
 //# sourceMappingURL=main.d.ts.map

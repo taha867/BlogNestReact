@@ -4,8 +4,9 @@ import { usePostComments } from "../../hooks/commentHooks/commentQueries";
 import { useAuth } from "../../hooks/authHooks/authHooks";
 import {CommentItem} from "./CommentItem";
 import {CommentForm} from "./CommentForm";
-import { Button } from "@/components/ui/button";
-import { CommentsLoader } from "./CommentsLoader";
+import { Button} from "@/components/ui/button";
+import { CommentInitializer } from "./CommentInitializer";
+import { Loader2 } from "lucide-react";
 
 export const CommentSection = ({ postId }) => {
   const { isAuthenticated } = useAuth();
@@ -45,7 +46,7 @@ export const CommentSection = ({ postId }) => {
 
 
   if (isLoading) {
-    return <CommentsLoader />;
+    return <CommentInitializer />;
   }
 
   return (

@@ -11,8 +11,6 @@ import { useCreatePost } from "../../../hooks/postHooks/postMutations";
 import { POST_STATUS } from "../../../utils/constants";
 import { createSubmitHandlerWithToast } from "../../../utils/formSubmitWithToast";
 
-import toast from "react-hot-toast";
-
 export const CreatePostForm = ({ onPostCreated }) => {
   const [isFormPending, startFormTransition] = useTransition();
 
@@ -42,18 +40,12 @@ export const CreatePostForm = ({ onPostCreated }) => {
       formData.append("image", data.image);
     }
 
-    const response = await createPostMutation.mutateAsync(formData);
+    await createPostMutation.mutateAsync(formData);
 
     startFormTransition(() => {
       methods.reset();
       // Switch to list tab after successful creation
       onPostCreated?.(status);
-      
-      // Delay toast until after transition to ensure loading state is cleared
-      const{message={}}=response;
-      if (message) {
-        toast.success(message);
-      }
     });
   };
 

@@ -99,7 +99,7 @@ let EmailService = class EmailService {
             console.error(constants_1.LOG_MESSAGES.EMAIL_TRANSPORTER_NOT_INIT);
             throw new Error(constants_1.ERROR_MESSAGES.EMAIL_SEND_FAILED);
         }
-        const frontendUrl = this.config.frontendUrl;
+        const frontendUrl = this.config.frontendUrl.replace(/\/$/, '');
         const resetLink = `${frontendUrl}/reset-password?token=${emailDto.resetToken}`;
         const htmlTemplate = (0, password_reset_template_1.getPasswordResetHtmlTemplate)(emailDto.userName, resetLink);
         const textTemplate = (0, password_reset_template_1.getPasswordResetTextTemplate)(emailDto.userName, resetLink);

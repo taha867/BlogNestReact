@@ -60,8 +60,8 @@ export const createPost = async (formData) => {
   const response = await fetchClient("/posts", {
     method: "POST",
     body: formData,
-  }, { showToast: "manual" });
-  return response;
+  });
+  return response.data;
 };
 
 
@@ -69,16 +69,15 @@ export const updatePost = async (postId, formData) => {
   const response = await fetchClient(`/posts/${postId}`, {
     method: "PUT",
     body: formData,
-  }, { showToast: "manual" });
-  return response;
+  });
+  return response.data;
 };
 
 
 export const deletePost = async (postId) => {
-  const response = await fetchClient(`/posts/${postId}`, {
+  await fetchClient(`/posts/${postId}`, {
     method: "DELETE",
-  }, { showToast: "manual" });
-  return response;
+  });
 };
 
 /**

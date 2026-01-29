@@ -11,7 +11,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useImperativeDialog } from "../../hooks/useImperativeDialog";
-import toast from "react-hot-toast";
 
 export const DeleteDialog = forwardRef(({ config }, ref) => {
   const {
@@ -62,23 +61,19 @@ export const DeleteDialog = forwardRef(({ config }, ref) => {
   const handleConfirmDelete = async () => {
     if (!entityToDelete?.id || !deleteMutation) return;
 
-
+    try {
       // Call mutation with formatted params
       const mutationParams = mutationCall
         ? mutationCall(entityToDelete)
         : entityToDelete.id;
 
-      const result = await deleteMutation.mutateAsync(mutationParams);
+      await deleteMutation.mutateAsync(mutationParams);
 
       // Close dialog after successful deletion
       closeDialogState();
-
-      // Show toast after dialog is closed
-      const { response:{message}={} } = result;
-      if (message) {
-        toast.success(message);
-      }
-   
+    } catch (error) {
+      // Error handling is done by React Query and axios interceptor
+    }
   };
 
   const handleCancel = () => {

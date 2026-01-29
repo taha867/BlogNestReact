@@ -245,12 +245,12 @@ export const fetchClient = async (url, options = {}, metadata = {}) => {
     const { status, ok, headers } = response;
 
     // Show success toast (if message exists and not disabled)
-    const { message: rootMessage, data: { message: dataMessage } = {} } =
-      responseData || {};
+    if (metadata.showToast !== false) {
+      const { message: rootMessage, data: { message: dataMessage } = {} } =
+        responseData || {};
 
-    const successMessage = dataMessage || rootMessage;
-    const{showToast}=metadata;
-    if (showToast !== false && showToast !== "manual") {
+      const successMessage = dataMessage || rootMessage;
+
       if (successMessage) {
         toast.success(successMessage);
       }
