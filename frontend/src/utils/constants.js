@@ -144,7 +144,7 @@ export const POST_STATUS = {
 };
 
 // Pagination Constants
-export const COMMENTS_PER_PAGE = 10;
+export const COMMENTS_PER_PAGE = 5;
 export const POSTS_PER_PAGE = 3;
 
 // Post Tab Constants - REMOVED: No longer using tabs, separate pages instead

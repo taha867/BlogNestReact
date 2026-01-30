@@ -14,17 +14,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Eye, EyeOff, Mail, User, Phone } from "lucide-react";
 
 export const FormField = ({
-  control,
-  name,
-  type = "text",
-  label,
-  placeholder,
+  control, //allows form to track the value
+  name,  // unique identifier for the field
+  type = "text", // type of input
+  label, 
+  placeholder, // browser instruction
   showIcon = false,
   showToggle = false,
   showForgotLink = false,
   className = "",
   disabled = false,
-  autoComplete,
+  autoComplete, // instruction for browser's autofill behavior
   rows = 4, // For textarea type
   helperText,
   ...props

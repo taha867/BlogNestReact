@@ -18,7 +18,6 @@ export const CommentSection = ({ postId }) => {
     hasNextPage,
     isFetchingNextPage,
     isLoading,
-    refetch,
   } = usePostComments(postId);
 
   // Flatten nested pages into a single array of comments
@@ -26,17 +25,15 @@ export const CommentSection = ({ postId }) => {
 
   // Get total comments count from the first page metadata with fallback
   const firstPagePagination = data?.pages[0]?.paginationOptions;
-  const apiTotal = firstPagePagination?.total;
+  const pageTotalComments = firstPagePagination?.total;
   
   let totalComments;
-  if (apiTotal !== undefined && apiTotal !== null && apiTotal > 0) {
-    totalComments = apiTotal;
+  if (pageTotalComments !== undefined && pageTotalComments !== null && pageTotalComments > 0) {
+    totalComments = pageTotalComments;
   } else {
     // If API says 0 or is missing, but we actually have comments, use the loaded count
     totalComments = allComments.length;
   }
-
-  const commentsText = `${totalComments} ${totalComments === 1 ? "comment" : "comments"}`;
 
   const handleLoadMore = () => {
     startTransition(() => {
