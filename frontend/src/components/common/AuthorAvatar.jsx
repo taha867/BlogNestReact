@@ -63,7 +63,7 @@ export const AuthorAvatar = ({ author, size = "md", className = "", fallbackBgCo
           src={authorImageUrl}
           alt={authorName}
           onClick={handleAvatarClick}
-          className={`${heightClass} ${widthClass} rounded-full object-cover flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity ${className}`}
+          className={`${heightClass} ${widthClass} rounded-full object-cover flex-shrink-0 cursor-pointer ${className}`}
           loading="lazy"
           role="button"
           tabIndex={0}

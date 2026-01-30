@@ -118,7 +118,7 @@ export const CommentItem = ({ comment, postId }) => {
           <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm hover:shadow-md transition-shadow duration-300">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <span className="font-bold text-slate-900 hover:text-blue-600 cursor-pointer transition-colors duration-200">
+                <span className="font-bold text-slate-900">
                   {authorName}
                 </span>
                 <span className="w-1 h-1 rounded-full bg-slate-300" />

@@ -13,6 +13,7 @@ import {
 import { Loader2 } from "lucide-react";
 import { useImperativeDialog } from "../../hooks/useImperativeDialog";
 
+// it allows deleteDailouge to accept a ref from its parrent
 export const DeleteDialog = forwardRef(({ config }, ref) => {
   const {
     title,
