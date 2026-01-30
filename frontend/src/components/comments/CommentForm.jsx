@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "@/components/ui/button";
@@ -14,12 +14,11 @@ export const CommentForm = ({
   parentId = null,
   onSuccess,
   placeholder = "Add comment...",
-  // Edit mode props
   initialValue = null,
   onUpdate = null,
   onCancel = null,
 }) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUpdatePending, startTransition] = useTransition();
   const createCommentMutation = useCreateComment();
 
   const isEditMode = !!initialValue && !!onUpdate;
@@ -44,20 +43,16 @@ export const CommentForm = ({
 
   const onSubmit = async (data) => {
     if (initialValue && onUpdate) {
-      setIsSubmitting(true);
-      try {
-        await onUpdate(data.body);
-      } catch (error) {
-      } finally {
-        setIsSubmitting(false);
-      }
+      // Use startTransition for handling the async update state automatically
+      startTransition(async () => {
+          await onUpdate(data.body);
+      });
       return;
     }
 
     // Create mode: create new comment
     if (!postId && !parentId) return;
 
-    setIsSubmitting(true);
     try {
       await createCommentMutation.mutateAsync({
         body: data.body,
@@ -73,12 +68,12 @@ export const CommentForm = ({
         onSuccess();
       }
     } catch (error) {
-    } finally {
-      setIsSubmitting(false);
+      // Error is handled by mutation onError or global handler
     }
   };
 
-  const isPending = isSubmitting || createCommentMutation.isPending;
+  // Combine transition pending state with mutation pending state
+  const isPending = isUpdatePending || createCommentMutation.isPending;
 
   // Determine button text based on state
   const buttonText = isPending
