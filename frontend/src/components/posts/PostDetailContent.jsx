@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ImageIcon } from "lucide-react";
+
 import { usePostDetail } from "../../hooks/postHooks/postQueries";
 import {PostInitializer} from "./PostInitializer";
 import {
@@ -60,15 +60,8 @@ export const PostDetailContent = ({ postId }) => {
         </div>
       </header>
 
-      {/* Main Image - Cinematic */}
-      {showPlaceholder ? (
-        <div className="w-full aspect-[21/9] bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl mb-12 flex items-center justify-center shadow-inner">
-          <div className="text-center">
-            <ImageIcon className="w-16 h-16 text-slate-300 mx-auto mb-2" />
-            <p className="text-sm text-slate-400 font-medium tracking-wide">No Cover Image</p>
-          </div>
-        </div>
-      ) : (
+      {/* Main Image - Cinematic (Only shown if image exists) */}
+      {!showPlaceholder && (
         <div className="relative w-full rounded-2xl overflow-hidden mb-12 shadow-xl bg-gray-100 group">
           <img
             src={imageUrl}
