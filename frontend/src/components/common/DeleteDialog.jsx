@@ -108,7 +108,10 @@ export const DeleteDialog = forwardRef(({ config }, ref) => {
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
-            onClick={handleConfirmDelete}
+            onClick={(e) => {
+              e.preventDefault();
+              handleConfirmDelete();
+            }}
             disabled={deleteMutation?.isPending}
             className="bg-red-600 text-white hover:bg-red-700"
           >
