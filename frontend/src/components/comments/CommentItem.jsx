@@ -9,7 +9,7 @@ import { DeleteCommentDialog } from "./DeleteCommentDialog";
 import { useAuth } from "../../hooks/authHooks/authHooks";
 import { getAuthorInfo } from "../../utils/postUtils";
 import { AuthorAvatar } from "../common/AuthorAvatar";
-import { useUpdateComment } from "../../hooks/commentHooks/commentMutations";
+import { useComments } from "../../hooks/commentHooks/commentHooks";
 
 export const CommentItem = ({ comment, postId }) => {
   const { isAuthenticated, user } = useAuth();
@@ -52,8 +52,8 @@ export const CommentItem = ({ comment, postId }) => {
     ? formatDistanceToNow(new Date(createdAt), { addSuffix: true, locale: enUS })
     : "";
 
-  // React Query mutation for updating comment
-  const updateCommentMutation = useUpdateComment();
+  // Centralized comment hook
+  const { updateComment, isUpdating } = useComments();
 
   const toggleReplies = () => {
     setShowReplies((prev) => !prev);
@@ -80,12 +80,10 @@ export const CommentItem = ({ comment, postId }) => {
     if (!id) return;
 
     try {
-      await updateCommentMutation.mutateAsync({
+      await updateComment({
         commentId: id,
         body: updatedBody,
       });
-      setIsEditing(false);
-      // Call onReplySuccess to refresh comments if provided
       setIsEditing(false);
     } catch (error) {
       throw error;
@@ -98,7 +96,7 @@ export const CommentItem = ({ comment, postId }) => {
     }
   };
 
-  const isPending = updateCommentMutation.isPending;
+  const isPending = isUpdating;
 
   return (
     <div className="relative group">

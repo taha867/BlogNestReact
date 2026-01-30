@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
 import { FormField } from "../custom";
-import { useCreateComment } from "../../hooks/commentHooks/commentMutations";
+import { useComments } from "../../hooks/commentHooks/commentHooks";
 import { createSubmitHandlerWithToast } from "../../utils/formSubmitWithToast";
 import { commentSchema } from "../../validations/commentSchemas";
 
@@ -19,7 +19,7 @@ export const CommentForm = ({
   onCancel = null,
 }) => {
   const [isUpdatePending, startTransition] = useTransition();
-  const createCommentMutation = useCreateComment();
+  const { createComment, isCreating } = useComments();
 
   const isEditMode = !!initialValue && !!onUpdate;
 
@@ -54,7 +54,7 @@ export const CommentForm = ({
     if (!postId && !parentId) return;
 
     try {
-      await createCommentMutation.mutateAsync({
+      await createComment({
         body: data.body,
         postId: parentId ? undefined : postId,
         parentId: parentId || undefined,
@@ -73,7 +73,7 @@ export const CommentForm = ({
   };
 
   // Combine transition pending state with mutation pending state
-  const isPending = isUpdatePending || createCommentMutation.isPending;
+  const isPending = isUpdatePending || isCreating;
 
   // Determine button text based on state
   const buttonText = isPending
