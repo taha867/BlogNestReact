@@ -78,16 +78,11 @@ export const CommentItem = ({ comment, postId }) => {
 
   const handleUpdate = async (updatedBody) => {
     if (!id) return;
-
-    try {
       await updateComment({
         commentId: id,
         body: updatedBody,
       });
       setIsEditing(false);
-    } catch (error) {
-      throw error;
-    }
   };
 
   const handleDelete = () => {

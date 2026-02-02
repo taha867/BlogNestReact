@@ -17,8 +17,8 @@ import { useImperativeDialog } from "../../hooks/useImperativeDialog";
 export const DeleteDialog = forwardRef(({ config }, ref) => {
   const {
     title,
-    descriptionFormatter,
-    mutationHook,
+    descriptionFormatter, // takes data and return text message
+    mutationHook, // react query hook
     mutationCall,
     payloadFormatter,
   } = config || {};

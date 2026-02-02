@@ -45,30 +45,25 @@ export const CommentForm = ({
     if (initialValue && onUpdate) {
       // Use startTransition for handling the async update state automatically
       startTransition(async () => {
-          await onUpdate(data.body);
+        await onUpdate(data.body);
       });
       return;
     }
 
     // Create mode: create new comment
     if (!postId && !parentId) return;
+    await createComment({
+      body: data.body,
+      postId: parentId ? undefined : postId,
+      parentId: parentId || undefined,
+    });
 
-    try {
-      await createComment({
-        body: data.body,
-        postId: parentId ? undefined : postId,
-        parentId: parentId || undefined,
-      });
+    // Reset form on success using stable formReset reference
+    formReset({ body: "" });
 
-      // Reset form on success using stable formReset reference
-      formReset({ body: "" });
-
-      // Call optional success callback
-      if (onSuccess) {
-        onSuccess();
-      }
-    } catch (error) {
-      // Error is handled by mutation onError or global handler
+    // Call optional success callback
+    if (onSuccess) {
+      onSuccess();
     }
   };
 
@@ -101,7 +96,7 @@ export const CommentForm = ({
             <span>Replying to {placeholder.replace("Reply to ", "")}</span>
           </div>
         )}
-        
+
         <div className="relative group">
           <FormField
             control={method.control}
@@ -112,7 +107,7 @@ export const CommentForm = ({
             disabled={isPending}
             className="w-full resize-none bg-white border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-200 rounded-xl"
           />
-          
+
           <div className="flex justify-end items-center gap-3 mt-3">
             {isEditMode && onCancel && (
               <Button
@@ -132,7 +127,9 @@ export const CommentForm = ({
               disabled={isPending || !method.formState.isDirty}
               size="sm"
               className={`rounded-full px-6 font-semibold shadow-sm transition-all duration-200 bg-green-600 text-white hover:bg-green-700 ${
-                !method.formState.isDirty ? "opacity-50" : "hover:shadow-md active:scale-95"
+                !method.formState.isDirty
+                  ? "opacity-50"
+                  : "hover:shadow-md active:scale-95"
               }`}
             >
               {isPending ? (

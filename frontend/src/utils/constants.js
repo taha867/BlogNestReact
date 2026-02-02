@@ -146,6 +146,7 @@ export const POST_STATUS = {
 // Pagination Constants
 export const COMMENTS_PER_PAGE = 5;
 export const POSTS_PER_PAGE = 3;
+export const MAX_FILE_SIZE_MB = 5;
 
 // Post Tab Constants - REMOVED: No longer using tabs, separate pages instead
 

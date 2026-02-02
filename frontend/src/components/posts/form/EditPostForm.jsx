@@ -17,6 +17,7 @@ import { useUpdatePost } from "../../../hooks/postHooks/postMutations";
 import { useImperativeDialog } from "../../../hooks/useImperativeDialog";
 import { POST_STATUS } from "../../../utils/constants";
 import { createSubmitHandlerWithToast } from "../../../utils/formSubmitWithToast";
+import { MAX_FILE_SIZE_MB } from "../../../utils/constants";
 
 export const EditPostForm = forwardRef((_props, ref) => {
   const {
@@ -149,7 +150,7 @@ export const EditPostForm = forwardRef((_props, ref) => {
               control={methods.control}
               name="image"
               label="Post Image (Optional)"
-              maxSizeMB={5}
+              maxSizeMB={MAX_FILE_SIZE_MB}
               existingImageUrl={currentPost?.image || null}
             />
 

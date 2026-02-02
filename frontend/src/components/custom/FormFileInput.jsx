@@ -9,13 +9,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { ImageIcon, X } from "lucide-react";
 import toast from "react-hot-toast";
+import { MAX_FILE_SIZE_MB } from "../../utils/constants";
 
 export const FormFileInput = ({
   control,
   name,
   label,
   accept = "image/*",
-  maxSizeMB = 5,
+  maxSizeMB = MAX_FILE_SIZE_MB,
   disabled = false,
   existingImageUrl = null, // URL string for existing image preview
 }) => {
