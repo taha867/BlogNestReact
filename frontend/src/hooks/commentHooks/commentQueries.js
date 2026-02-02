@@ -29,7 +29,7 @@ export const usePostComments = (postId, limit = COMMENTS_PER_PAGE) => {
       const loadedCount = allPages.length * limit;
       return loadedCount < paginationOptions.total ? allPages.length + 1 : undefined;
     },
-    enabled: !!postId,
+    enabled: !!postId, //converts postid to bolean , query will not eun if postId is null or undefined
     staleTime: 1000 * 30,
   });
 };
